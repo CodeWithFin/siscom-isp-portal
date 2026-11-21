@@ -12,45 +12,47 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:py-20">
-          <div className="animate-rise">
-            <p className="tech-label text-slate">SISCOM · ISP LENDING</p>
-            <h1 className="display-hero mt-4 max-w-[14ch]">
-              Unlock Working Capital for Your ISP in Minutes.
-            </h1>
-            <p className="mt-6 max-w-xl text-[14px] leading-[1.5] font-medium text-slate">
-              Upload your 6-month M-Pesa statement to instantly check your loan
-              qualification—up to{" "}
-              <span className="text-charcoal">3x your monthly net cash flow</span>
-              . No account required.
-            </p>
+        {/* Hero — Basis Theory–style split with isometric animation */}
+        <section className="relative overflow-hidden border-b border-steel/70 bg-[#fafafa]">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4 lg:py-16">
+            <div className="relative z-10 animate-rise">
+              <p className="tech-label text-slate">SISCOM · ISP LENDING</p>
+              <h1 className="display-hero mt-4 max-w-[13ch]">
+                Unlock Working Capital for Your ISP in Minutes.
+              </h1>
+              <p className="mt-6 max-w-xl text-[14px] leading-[1.5] font-medium text-slate">
+                Upload your 6-month M-Pesa statement to instantly check your loan
+                qualification—up to{" "}
+                <span className="text-charcoal">3x your monthly net cash flow</span>
+                . No account required.
+              </p>
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-3">
-              {[
-                "Zero registration",
-                "Automated cash-flow scoring",
-                "Up to 3× offer",
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-2">
-                  <span className="flex h-3 w-3 items-center justify-center rounded-full bg-siscom" />
-                  <span className="text-[14px] font-medium text-ink">{item}</span>
-                </div>
-              ))}
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-3">
+                {[
+                  "Zero registration",
+                  "Automated cash-flow scoring",
+                  "Up to 3× offer",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2">
+                    <span className="flex h-3 w-3 items-center justify-center rounded-[3px] bg-ink" />
+                    <span className="text-[14px] font-medium text-ink">{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-col gap-3 sm:max-w-xs">
+                <Button href="#check" variant="primary" arrow className="w-full">
+                  Check My Qualification
+                </Button>
+                <Button href="#how-it-works" variant="outline" className="w-full">
+                  How It Works
+                </Button>
+              </div>
             </div>
 
-            <div className="mt-8 flex flex-col gap-3 sm:max-w-xs">
-              <Button href="#check" variant="primary" arrow className="w-full">
-                Check My Qualification
-              </Button>
-              <Button href="#how-it-works" variant="outline" className="w-full">
-                How It Works
-              </Button>
+            <div className="relative z-0 -mx-2 animate-rise sm:mx-0 lg:-mr-8" style={{ animationDelay: "120ms" }}>
+              <HeroDiagram />
             </div>
-          </div>
-
-          <div className="animate-rise" style={{ animationDelay: "120ms" }}>
-            <HeroDiagram />
           </div>
         </section>
 
