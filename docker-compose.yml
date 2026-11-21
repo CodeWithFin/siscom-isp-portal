@@ -1,0 +1,65 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: siscom_isp_credit_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-siscom_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-siscom_isp_credit}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5460:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-siscom_admin} -d ${POSTGRES_DB:-siscom_isp_credit}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: siscom_isp_credit_web
+    restart: unless-stopped
+    ports:
+      - "3010:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-siscom_admin}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-siscom_isp_credit}
+      SESSION_SECRET: ${SESSION_SECRET}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      CUSTOMER_CARE_EMAIL: ${CUSTOMER_CARE_EMAIL:-}
+      CUSTOMER_CARE_PHONE: ${CUSTOMER_CARE_PHONE:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      FROM_EMAIL: ${FROM_EMAIL:-noreply@siscom.tech}
+      HELPLINE: ${HELPLINE:-+254700000000}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  cleanup:
+    image: postgres:16-alpine
+    container_name: siscom_isp_credit_cleanup
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER:-siscom_admin}
+      POSTGRES_DB: ${POSTGRES_DB:-siscom_isp_credit}
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      while true; do
+        echo \"[cleanup] Purging expired unconverted assessments...\";
+        psql -h db -U $$POSTGRES_USER -d $$POSTGRES_DB -c \"DELETE FROM assessments WHERE is_converted = FALSE AND expires_at < NOW();\";
+        sleep 86400;
+      done
+      "
+
+volumes:
+  pgdata:
