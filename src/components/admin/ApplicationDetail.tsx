@@ -49,7 +49,7 @@ export function ApplicationDetail({
           <p className="tech-label text-slate">{application.reference_code}</p>
           <h1 className="feature-heading mt-1">{application.isp_name}</h1>
         </div>
-        <Button href="/admin" variant="ghost">
+        <Button href="/admin" variant="outline">
           Back to list
         </Button>
       </div>
@@ -76,7 +76,7 @@ export function ApplicationDetail({
           </dl>
         </div>
 
-        <div className="rounded-2xl bg-graphite p-5 text-paper shadow-[var(--shadow-graphite-card)]">
+        <div className="rounded-2xl bg-navy-mid p-5 text-paper shadow-[var(--shadow-graphite-card)]">
           <p className="tech-label text-white/50">CASH FLOW SUMMARY</p>
           <dl className="mt-4 space-y-3 text-[14px]">
             {[
@@ -177,7 +177,7 @@ export function ApplicationDetail({
           />
         </label>
         <div className="mt-4 flex items-center gap-3">
-          <Button type="button" variant="graphite" onClick={save} disabled={saving}>
+          <Button type="button" variant="primary" onClick={save} disabled={saving}>
             {saving ? "Saving…" : "Save updates"}
           </Button>
           {message ? (

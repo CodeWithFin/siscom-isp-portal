@@ -25,7 +25,7 @@ export function ConfirmationClient({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-aqua-relay text-ink">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-siscom text-white">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
             d="M5 13l4 4L19 7"
@@ -49,7 +49,7 @@ export function ConfirmationClient({
               {referenceCode}
             </p>
           </div>
-          <Button type="button" variant="graphite" onClick={copy}>
+          <Button type="button" variant="primary" onClick={copy} className="!min-h-10">
             {copied ? "Copied" : "Copy"}
           </Button>
         </div>
@@ -91,7 +91,7 @@ export function ConfirmationClient({
       </div>
 
       <div className="mt-8 flex justify-center">
-        <Button href="/" variant="ghost">
+        <Button href="/" variant="outline">
           Return to Homepage
         </Button>
       </div>

@@ -6,26 +6,29 @@ export function Header({ helpline }: { helpline?: string }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-steel bg-paper/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 text-ink">
-          <span className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-ink text-[11px] font-semibold text-paper">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="flex items-center gap-2.5 text-ink">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-siscom text-[12px] font-bold text-white">
             S
           </span>
-          <span className="text-[14px] font-semibold tracking-[-0.02em]">
-            Siscom Technologies
+          <span className="font-[family-name:var(--font-poppins)] text-[15px] font-semibold tracking-[-0.02em]">
+            SISCOM
           </span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
-          <a href="/#how-it-works" className="text-nav text-slate hover:text-ink">
+          <a
+            href="/#how-it-works"
+            className="text-nav text-[#353535] hover:text-siscom"
+          >
             How It Works
           </a>
-          <a href="/#trust" className="text-nav text-slate hover:text-ink">
+          <a href="/#trust" className="text-nav text-[#353535] hover:text-siscom">
             Security
           </a>
           <a
             href={`tel:${phone.replace(/\s/g, "")}`}
-            className="tech-label text-slate hover:text-ink"
+            className="text-nav text-slate hover:text-siscom"
           >
             {phone}
           </a>
@@ -34,11 +37,11 @@ export function Header({ helpline }: { helpline?: string }) {
         <div className="flex items-center gap-3">
           <a
             href={`tel:${phone.replace(/\s/g, "")}`}
-            className="tech-label text-slate md:hidden"
+            className="text-nav text-slate md:hidden"
           >
             Call
           </a>
-          <Button href="/#check" variant="graphite" className="!py-2 !px-4">
+          <Button href="/#check" variant="primary" className="!min-h-10 !px-5 !text-[13px]">
             Check qualification
           </Button>
         </div>

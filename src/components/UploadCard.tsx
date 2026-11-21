@@ -98,7 +98,7 @@ export function UploadCard() {
             <p className="tech-label text-slate">STATEMENT.UPLOAD</p>
             <h2 className="feature-heading mt-1 text-ink">Check My Qualification</h2>
           </div>
-          <span className="hidden rounded-full bg-aqua-relay/40 px-3 py-1 text-[12px] font-semibold text-ink sm:inline">
+          <span className="hidden rounded-full bg-siscom-soft px-3 py-1 text-[12px] font-semibold text-siscom-dark sm:inline">
             Max 15MB PDF
           </span>
         </div>
@@ -126,7 +126,7 @@ export function UploadCard() {
             className="hidden"
             onChange={(e) => onFile(e.target.files?.[0] ?? null)}
           />
-          <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-[8px] bg-ink text-paper">
+          <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-siscom text-paper">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path
                 d="M9 2.5v9M9 2.5 5.5 6M9 2.5 12.5 6M3 12.5V14a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 15 14v-1.5"
@@ -184,7 +184,7 @@ export function UploadCard() {
               <div key={label} className="flex items-center gap-3">
                 <span
                   className={`h-2.5 w-2.5 rounded-[3px] ${
-                    i <= stage ? "bg-aqua-relay" : "bg-steel"
+                    i <= stage ? "bg-siscom" : "bg-steel"
                   }`}
                 />
                 <span
@@ -203,16 +203,16 @@ export function UploadCard() {
           <div className="mt-5 flex flex-col gap-2">
             <Button
               type="button"
-              variant="aqua"
+              variant="primary"
               arrow
-              className="w-full !rounded-2xl"
+              className="w-full"
               onClick={() => submit(false)}
             >
               Check My Qualification
             </Button>
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               className="w-full"
               onClick={() => submit(true)}
             >

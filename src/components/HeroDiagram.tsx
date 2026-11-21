@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 export function HeroDiagram() {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[480px]">
-      {/* Back sheet */}
       <motion.div
         className="animate-float-sheet absolute inset-x-6 top-8 bottom-16 rounded-2xl border border-steel bg-cloud shadow-[var(--shadow-technical-card)]"
         initial={{ opacity: 0, y: 24 }}
@@ -13,7 +12,6 @@ export function HeroDiagram() {
         transition={{ duration: 0.7, delay: 0.15 }}
       />
 
-      {/* Mid sheet */}
       <motion.div
         className="animate-float-sheet-alt absolute inset-x-3 top-14 bottom-10 overflow-hidden rounded-2xl border border-steel bg-paper shadow-[var(--shadow-cloud-card)]"
         initial={{ opacity: 0, y: 28 }}
@@ -26,8 +24,11 @@ export function HeroDiagram() {
           <div className="mt-4 space-y-2">
             {[78, 54, 66, 42, 88].map((w, i) => (
               <div key={i} className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-[2px] bg-ink" />
-                <div className="h-2 rounded-full bg-steel/80" style={{ width: `${w}%` }} />
+                <span className="h-2 w-2 rounded-full bg-siscom" />
+                <div
+                  className="h-2 rounded-full bg-siscom-soft"
+                  style={{ width: `${w}%` }}
+                />
               </div>
             ))}
           </div>
@@ -35,16 +36,15 @@ export function HeroDiagram() {
         </div>
       </motion.div>
 
-      {/* Graphite center card */}
       <motion.div
-        className="absolute left-1/2 top-1/2 w-[78%] -translate-x-1/2 -translate-y-[42%] rounded-2xl bg-graphite p-5 text-paper shadow-[var(--shadow-graphite-card)]"
+        className="absolute left-1/2 top-1/2 w-[78%] -translate-x-1/2 -translate-y-[42%] rounded-2xl bg-navy-mid p-5 text-paper shadow-[var(--shadow-graphite-card)]"
         initial={{ opacity: 0, scale: 0.94, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.75, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="flex items-center justify-between">
           <p className="tech-label text-white/55">PRE-QUAL OFFER</p>
-          <span className="rounded-full bg-aqua-relay px-2 py-0.5 text-[11px] font-semibold text-ink">
+          <span className="rounded-full bg-siscom px-2.5 py-0.5 text-[11px] font-semibold text-white">
             LIVE
           </span>
         </div>
@@ -65,12 +65,12 @@ export function HeroDiagram() {
           />
           <defs>
             <linearGradient id="signal" x1="0" y1="0" x2="280" y2="0">
-              <stop stopColor="#07cddf" />
-              <stop offset="1" stopColor="#9eed15" />
+              <stop stopColor="#11127C" />
+              <stop offset="1" stopColor="#EB1260" />
             </linearGradient>
           </defs>
-          <circle cx="90" cy="8" r="3.5" fill="#94faf0" />
-          <circle cx="180" cy="40" r="3.5" fill="#bff660" />
+          <circle cx="90" cy="8" r="3.5" fill="#EB1260" />
+          <circle cx="180" cy="40" r="3.5" fill="#CA3060" />
         </svg>
 
         <div className="mt-2 grid grid-cols-3 gap-2">
@@ -90,14 +90,13 @@ export function HeroDiagram() {
         </div>
       </motion.div>
 
-      {/* Floating badge */}
       <motion.div
-        className="absolute bottom-4 right-2 rounded-xl border border-steel bg-paper px-3 py-2 shadow-[var(--shadow-technical-card)]"
+        className="absolute bottom-4 right-2 rounded-full border border-steel bg-paper px-3 py-2 shadow-[var(--shadow-technical-card)]"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.5 }}
       >
-        <p className="tech-label text-slate">ODPC · 256-bit</p>
+        <p className="tech-label text-siscom">ODPC · 256-bit</p>
       </motion.div>
     </div>
   );

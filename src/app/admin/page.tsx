@@ -58,7 +58,7 @@ export default async function AdminPage({
             <p className="tech-label text-slate">SISCOM INTERNAL</p>
             <h1 className="feature-heading">Loan Applications</h1>
           </div>
-          <Button href="/" variant="ghost">
+          <Button href="/" variant="outline">
             Public site
           </Button>
         </div>

@@ -28,11 +28,11 @@ export function ResultClient({ assessment }: { assessment: PublicAssessment }) {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       {status === "QUALIFIED" ? (
-        <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-[12px] font-semibold text-emerald-800">
+        <span className="inline-flex rounded-full bg-siscom-soft px-3 py-1 text-[12px] font-semibold text-siscom-dark">
           Pre-Qualified
         </span>
       ) : status === "MANUAL_REVIEW" ? (
-        <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-[12px] font-semibold text-amber-900">
+        <span className="inline-flex rounded-full bg-[#fff4e5] px-3 py-1 text-[12px] font-semibold text-[#9a6700]">
           Manual Review
         </span>
       ) : (
@@ -131,7 +131,7 @@ export function ResultClient({ assessment }: { assessment: PublicAssessment }) {
               <div className="mt-6">
                 <Button
                   href={`/apply/${assessment.id}?amount=${amount}`}
-                  variant="aqua"
+                  variant="primary"
                   arrow
                   className="w-full sm:w-auto"
                 >
@@ -143,7 +143,7 @@ export function ResultClient({ assessment }: { assessment: PublicAssessment }) {
             <div className="mt-8">
               <Button
                 href={`/apply/${assessment.id}?amount=${Math.min(max, Math.max(min, assessment.maxQualifiedAmount || min))}`}
-                variant="aqua"
+                variant="primary"
                 arrow
               >
                 Request Manual Review
@@ -156,7 +156,7 @@ export function ResultClient({ assessment }: { assessment: PublicAssessment }) {
       {status === "NOT_QUALIFIED" ||
       assessment.riskFlags.includes("TAMPERED_REJECTED") ? (
         <div className="mt-8">
-          <Button href="/" variant="ghost">
+          <Button href="/" variant="outline">
             Upload a Different Statement
           </Button>
         </div>

@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
-import { Chivo_Mono, Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import {
+  Chivo_Mono,
+  Inter,
+  Inter_Tight,
+  JetBrains_Mono,
+  Poppins,
+} from "next/font/google";
 import "./globals.css";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700"],
+});
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,7 +23,7 @@ const inter = Inter({
 const display = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400", "500", "600"],
+  weight: ["500", "600", "700"],
 });
 
 const chivo = Chivo_Mono({
@@ -40,9 +52,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${display.variable} ${chivo.variable} ${mono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${inter.variable} ${display.variable} ${chivo.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-paper text-ink">{children}</body>
+      <body className="flex min-h-full flex-col bg-paper text-ink">
+        {children}
+      </body>
     </html>
   );
 }

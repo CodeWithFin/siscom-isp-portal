@@ -66,7 +66,7 @@ export function AdminLoginForm() {
 
       <Button
         type="submit"
-        variant="graphite"
+        variant="primary"
         className="mt-6 w-full"
         disabled={loading}
       >

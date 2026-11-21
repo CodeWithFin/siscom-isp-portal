@@ -52,7 +52,7 @@ export function ApplicationsTable({
               onClick={() => setStatus(s)}
               className={`rounded-full px-3 py-1.5 text-[13px] font-medium ${
                 active
-                  ? "bg-aqua-relay text-ink"
+                  ? "bg-siscom text-white"
                   : "bg-cloud text-slate hover:text-ink"
               }`}
             >

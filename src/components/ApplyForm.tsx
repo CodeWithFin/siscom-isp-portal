@@ -60,9 +60,9 @@ export function ApplyForm({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
-      <div className="rounded-2xl bg-graphite px-4 py-3 text-[14px] font-medium text-paper shadow-[var(--shadow-graphite-card)]">
+      <div className="rounded-[35px] bg-navy px-5 py-3 text-[14px] font-medium text-paper shadow-[var(--shadow-graphite-card)]">
         Applying for:{" "}
-        <span className="text-aqua-relay">{formatKes(requestedAmount)}</span>
+        <span className="text-siscom">{formatKes(requestedAmount)}</span>
         <span className="text-white/50">
           {" "}
           (Pre-qualified limit: {formatKes(max)})
@@ -188,7 +188,7 @@ export function ApplyForm({
 
         <Button
           type="submit"
-          variant="aqua"
+          variant="primary"
           arrow
           disabled={loading}
           className="w-full sm:w-auto"

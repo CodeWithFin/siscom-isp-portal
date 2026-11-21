@@ -33,17 +33,17 @@ export default function HomePage() {
                 "Up to 3× offer",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2">
-                  <span className="flex h-3 w-3 items-center justify-center rounded-[3px] bg-ink" />
+                  <span className="flex h-3 w-3 items-center justify-center rounded-full bg-siscom" />
                   <span className="text-[14px] font-medium text-ink">{item}</span>
                 </div>
               ))}
             </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:max-w-xs">
-              <Button href="#check" variant="aqua" arrow className="w-full">
+              <Button href="#check" variant="primary" arrow className="w-full">
                 Check My Qualification
               </Button>
-              <Button href="#how-it-works" variant="ghost" className="w-full">
+              <Button href="#how-it-works" variant="outline" className="w-full">
                 How It Works
               </Button>
             </div>
@@ -65,7 +65,7 @@ export default function HomePage() {
               {["M-Pesa Personal", "Till", "Paybill"].map((label) => (
                 <span
                   key={label}
-                  className="rounded-xl bg-white/10 px-4 py-2 text-[13px] font-medium text-paper shadow-[inset_0_0_0_2px_rgba(255,255,255,0.13)]"
+                  className="rounded-[35px] border border-white/40 bg-transparent px-4 py-2 text-[13px] font-medium text-paper"
                 >
                   {label}
                 </span>
@@ -143,7 +143,7 @@ export default function HomePage() {
                   key={card.title}
                   className="rounded-2xl border border-steel bg-paper p-5 shadow-[var(--shadow-technical-card)]"
                 >
-                  <span className="mb-3 inline-flex h-3 w-3 rounded-[3px] bg-aqua-relay" />
+                  <span className="mb-3 inline-flex h-3 w-3 rounded-full bg-siscom" />
                   <h3 className="text-[16px] font-semibold text-ink">{card.title}</h3>
                   <p className="mt-2 text-[14px] leading-[1.45] text-slate">
                     {card.body}
