@@ -36,7 +36,6 @@ services:
       CUSTOMER_CARE_PHONE: ${CUSTOMER_CARE_PHONE:-}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       FROM_EMAIL: ${FROM_EMAIL:-noreply@siscom.tech}
-      HELPLINE: ${HELPLINE:-+254700000000}
     depends_on:
       db:
         condition: service_healthy
