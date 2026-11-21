@@ -42,6 +42,10 @@ export const metadata: Metadata = {
   title: "Siscom ISP Credit Scoring & Loan Eligibility",
   description:
     "Upload your 6-month M-Pesa statement to instantly check ISP loan qualification—up to 3x your monthly net cash flow. No account required.",
+  icons: {
+    icon: "/brand/siscom-favicon.png",
+    apple: "/brand/siscom-favicon.png",
+  },
 };
 
 export default function RootLayout({

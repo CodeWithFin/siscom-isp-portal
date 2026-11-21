@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Button } from "./ui/Button";
+import { SiscomLogo } from "./SiscomLogo";
 
 export function Header({ helpline }: { helpline?: string }) {
   const phone = helpline || process.env.HELPLINE || "+254 700 000 000";
@@ -7,14 +7,7 @@ export function Header({ helpline }: { helpline?: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-steel bg-paper/95 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5 text-ink">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-siscom text-[12px] font-bold text-white">
-            S
-          </span>
-          <span className="font-[family-name:var(--font-poppins)] text-[15px] font-semibold tracking-[-0.02em]">
-            SISCOM
-          </span>
-        </Link>
+        <SiscomLogo priority />
 
         <nav className="hidden items-center gap-6 md:flex">
           <a
@@ -41,7 +34,11 @@ export function Header({ helpline }: { helpline?: string }) {
           >
             Call
           </a>
-          <Button href="/#check" variant="primary" className="!min-h-10 !px-5 !text-[13px]">
+          <Button
+            href="/#check"
+            variant="primary"
+            className="!min-h-10 !px-5 !text-[13px]"
+          >
             Check qualification
           </Button>
         </div>
