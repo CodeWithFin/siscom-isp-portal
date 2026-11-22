@@ -28,7 +28,9 @@ export async function POST(request: Request) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    const limited = rateLimit(`upload:${ip}`, 5, 60 * 60 * 1000);
+    const uploadLimit =
+      process.env.NODE_ENV === "production" ? 5 : 50;
+    const limited = rateLimit(`upload:${ip}`, uploadLimit, 60 * 60 * 1000);
     if (!limited.allowed) {
       return NextResponse.json(
         { error: "Too many uploads. Please try again later." },
