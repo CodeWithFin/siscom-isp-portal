@@ -110,10 +110,15 @@ export async function POST(request: Request) {
       transactions = parseMpesaStatementText(text);
 
       if (transactions.length < 10) {
+        console.warn(
+          `[upload] parsed ${transactions.length} txs from ${text.length} chars / ${file.name}`,
+        );
         return NextResponse.json(
           {
             error:
-              "Could not parse enough M-Pesa transactions. Ensure you uploaded an official 6-month statement.",
+              transactions.length === 0
+                ? "Could not read transactions from this PDF. Use an official Safaricom M-Pesa / Till / Paybill statement and the SMS password."
+                : `Only ${transactions.length} transactions were found. Upload a full official 6-month statement PDF.`,
           },
           { status: 422 },
         );

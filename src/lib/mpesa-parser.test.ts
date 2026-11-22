@@ -1,0 +1,90 @@
+import assert from "node:assert/strict";
+import { parseMpesaStatementText } from "./mpesa-parser";
+
+function makeStacked(n: number): string {
+  const lines: string[] = [
+    "Receipt No.",
+    "Completion Time",
+    "Details",
+    "Transaction Status",
+    "Paid In",
+    "Withdrawn",
+    "Balance",
+  ];
+  let balance = 50000;
+  for (let i = 0; i < n; i += 1) {
+    const receipt = `TGH${String(1000000 + i).padStart(7, "0")}`;
+    const day = String((i % 28) + 1).padStart(2, "0");
+    const paidIn = i % 2 === 0 ? 1500 + i : 0;
+    const withdrawn = i % 2 === 1 ? 800 + i : 0;
+    balance = balance + paidIn - withdrawn;
+    lines.push(
+      receipt,
+      `2025-06-${day} 10:${String(i % 60).padStart(2, "0")}:00`,
+      i % 2 === 0
+        ? `Customer Payment from 2547${10000000 + i}`
+        : "Pay Bill to Safaricom",
+      "Completed",
+      paidIn ? paidIn.toFixed(2) : "0.00",
+      withdrawn ? withdrawn.toFixed(2) : "0.00",
+      balance.toFixed(2),
+    );
+  }
+  return lines.join("\n");
+}
+
+function makeFlatRows(n: number): string {
+  const lines: string[] = [];
+  let balance = 40000;
+  for (let i = 0; i < n; i += 1) {
+    const receipt = `SFC${String(2000000 + i).padStart(7, "0")}`;
+    const paidIn = i % 3 === 0 ? 2200 : 0;
+    const withdrawn = i % 3 === 0 ? 0 : 900;
+    balance = balance + paidIn - withdrawn;
+    lines.push(
+      `${receipt} 2025-07-${String((i % 28) + 1).padStart(2, "0")} 14:22:11 Customer Payment from 254712345678 Completed ${paidIn.toFixed(2)} ${withdrawn.toFixed(2)} ${balance.toFixed(2)}`,
+    );
+  }
+  return lines.join("\n");
+}
+
+{
+  const txs = parseMpesaStatementText(makeStacked(40));
+  assert.ok(txs.length >= 30, `stacked expected >=30 got ${txs.length}`);
+  assert.ok(txs[0].receipt.startsWith("TGH"));
+  assert.ok(txs.some((t) => t.paidIn > 0));
+  assert.ok(txs.some((t) => t.withdrawn > 0));
+}
+
+{
+  const txs = parseMpesaStatementText(makeFlatRows(25));
+  assert.ok(txs.length >= 20, `flat expected >=20 got ${txs.length}`);
+}
+
+{
+  // Flattened stream like pdf.js join(" ")
+  const parts: string[] = [];
+  let balance = 10000;
+  for (let i = 0; i < 15; i += 1) {
+    const receipt = `ABC${String(3000000 + i).padStart(7, "0")}`;
+    const paidIn = 1000;
+    balance += paidIn;
+    parts.push(
+      receipt,
+      "2025-08-01",
+      "09:15:22",
+      "Funds",
+      "received",
+      "from",
+      "254700000001",
+      "Completed",
+      "1,000.00",
+      "0.00",
+      balance.toFixed(2),
+    );
+  }
+  const txs = parseMpesaStatementText(parts.join(" "));
+  assert.ok(txs.length >= 10, `stream expected >=10 got ${txs.length}`);
+}
+
+console.log("mpesa-parser tests passed");
