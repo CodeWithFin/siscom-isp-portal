@@ -285,6 +285,20 @@ body {
   }
 }
 
+@keyframes hero-drift {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(0, -1.5%, 0);
+  }
+}
+
+.animate-hero-drift {
+  animation: hero-drift 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
 .animate-float-sheet {
   animation: float-sheet 7s ease-in-out infinite;
 }

@@ -13,23 +13,10 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero — tower atmosphere + scoring diagram */}
-        <section className="relative overflow-hidden border-b border-steel/70 bg-[#fafafa]">
-          <div className="pointer-events-none absolute inset-0">
-            <Image
-              src="/images/tower.jpg"
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-[center_20%] opacity-[0.18] sm:opacity-[0.22]"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,#fafafa_0%,rgba(250,250,250,0.92)_42%,rgba(250,250,250,0.55)_70%,rgba(250,250,250,0.35)_100%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_40%,rgba(235,18,96,0.08),transparent_55%)]" />
-          </div>
-
-          <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4 lg:py-16">
-            <div className="relative z-10 animate-rise">
+        {/* Hero — copy on paper, tower + diagram on the right */}
+        <section className="relative overflow-hidden border-b border-steel/70 bg-paper">
+          <div className="mx-auto grid max-w-6xl lg:grid-cols-2 lg:items-stretch">
+            <div className="flex flex-col justify-center px-4 py-12 sm:px-6 lg:py-16 animate-rise">
               <p className="tech-label text-slate">SISCOM · ISP LENDING</p>
               <h1 className="display-hero mt-4 max-w-[13ch]">
                 Unlock Working Capital for Your ISP in Minutes.
@@ -65,26 +52,38 @@ export default function HomePage() {
             </div>
 
             <div
-              className="relative z-0 -mx-2 animate-rise sm:mx-0 lg:-mr-8"
-              style={{ animationDelay: "120ms" }}
+              className="relative min-h-[420px] overflow-hidden bg-[#0b1c3a] sm:min-h-[520px] lg:min-h-full animate-rise"
+              style={{ animationDelay: "100ms" }}
             >
-              <HeroDiagram />
+              <Image
+                src="/images/tower.jpg"
+                alt=""
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="animate-hero-drift object-cover object-[center_22%]"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(4,8,37,0.45)_0%,rgba(4,8,37,0.12)_45%,rgba(4,8,37,0.28)_100%)]" />
+              <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                <div className="w-full max-w-[520px] scale-[0.92] sm:scale-100">
+                  <HeroDiagram />
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Dark social / trust strip */}
+        {/* Trust strip */}
         <section className="hatched-band">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-4 py-10 sm:px-6">
-            <p className="max-w-md text-[18px] font-medium text-white/70">
-              Built for Kenyan ISPs who need working capital without the paperwork
-              maze.
+            <p className="max-w-md text-[18px] font-medium text-white/75">
+              Built for Kenyan ISPs who keep the network running.
             </p>
             <div className="flex flex-wrap gap-3">
               {["M-Pesa Personal", "Till", "Paybill"].map((label) => (
                 <span
                   key={label}
-                  className="rounded-[35px] border border-white/40 bg-transparent px-4 py-2 text-[13px] font-medium text-paper"
+                  className="rounded-[35px] border border-white/40 px-4 py-2 text-[13px] font-medium text-paper"
                 >
                   {label}
                 </span>
@@ -93,104 +92,117 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Network gear visual + how it works */}
-        <section className="border-b border-steel">
-          <div className="mx-auto grid max-w-6xl items-stretch gap-0 lg:grid-cols-2">
-            <div className="relative min-h-[280px] overflow-hidden bg-cloud sm:min-h-[360px]">
+        {/* How it works + upload */}
+        <section
+          id="how-it-works"
+          className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-20"
+        >
+          <div>
+            <h2 className="display-section">From statement to offer in three steps.</h2>
+            <p className="mt-5 max-w-lg text-[14px] leading-[1.5] font-medium text-slate">
+              We parse your official Safaricom statement in memory, verify balance
+              continuity, and compute a pre-qualified limit based on average monthly
+              net cash flow.
+            </p>
+
+            <ol className="mt-8 space-y-5">
+              {[
+                {
+                  n: "01",
+                  t: "Upload",
+                  d: "Drop a 6-month M-Pesa, Till, or Paybill PDF and enter the statement password.",
+                },
+                {
+                  n: "02",
+                  t: "Score",
+                  d: "We unlock, validate continuity, and tier your multiplier up to 3.0×.",
+                },
+                {
+                  n: "03",
+                  t: "Apply",
+                  d: "Qualified ISPs submit business details — Siscom customer care finalizes disbursement.",
+                },
+              ].map((step) => (
+                <li key={step.n} className="flex gap-4">
+                  <span className="tech-label mt-1 text-slate">{step.n}</span>
+                  <div>
+                    <p className="text-[16px] font-semibold text-ink">{step.t}</p>
+                    <p className="mt-1 text-[14px] leading-[1.45] text-slate">
+                      {step.d}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <UploadCard />
+        </section>
+
+        {/* Router — edge-to-edge media + copy */}
+        <section className="border-t border-steel">
+          <div className="grid lg:grid-cols-2">
+            <div className="relative aspect-[5/4] lg:aspect-auto lg:min-h-[480px]">
               <Image
                 src="/images/router.jpg"
-                alt="ISP customer premise router and network gear"
+                alt="Customer-premise router used by ISP operators"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-center"
+                className="object-cover"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(4,8,37,0.45)_100%)]" />
-              <p className="absolute bottom-5 left-5 right-5 tech-label text-white/80">
-                Keep CPE stocked. Keep subscribers online.
-              </p>
             </div>
-
-            <div id="how-it-works" className="px-4 py-14 sm:px-8 lg:py-16">
-              <h2 className="display-section">From statement to offer in three steps.</h2>
-              <p className="mt-5 max-w-lg text-[14px] leading-[1.5] font-medium text-slate">
-                We parse your official Safaricom statement in memory, verify balance
-                continuity, and compute a pre-qualified limit based on average monthly
-                net cash flow.
-              </p>
-
-              <ol className="mt-8 space-y-5">
-                {[
-                  {
-                    n: "01",
-                    t: "Upload",
-                    d: "Drop a 6-month M-Pesa, Till, or Paybill PDF and enter the statement password.",
-                  },
-                  {
-                    n: "02",
-                    t: "Score",
-                    d: "We unlock, validate continuity, and tier your multiplier up to 3.0×.",
-                  },
-                  {
-                    n: "03",
-                    t: "Apply",
-                    d: "Qualified ISPs submit business details — Siscom customer care finalizes disbursement.",
-                  },
-                ].map((step) => (
-                  <li key={step.n} className="flex gap-4">
-                    <span className="tech-label mt-1 text-slate">{step.n}</span>
-                    <div>
-                      <p className="text-[16px] font-semibold text-ink">{step.t}</p>
-                      <p className="mt-1 text-[14px] leading-[1.45] text-slate">
-                        {step.d}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* Upload */}
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-          <div className="mx-auto max-w-xl">
-            <UploadCard />
-          </div>
-        </section>
-
-        {/* Homes connected — speaker lifestyle */}
-        <section className="relative overflow-hidden border-y border-steel">
-          <div className="mx-auto grid max-w-6xl items-center lg:grid-cols-2">
-            <div className="order-2 px-4 py-14 sm:px-8 lg:order-1 lg:py-16">
-              <p className="tech-label text-slate">WHY IT MATTERS</p>
-              <h2 className="display-section mt-3 max-w-[16ch]">
-                Working capital that keeps households connected.
+            <div className="flex flex-col justify-center bg-cloud px-4 py-14 sm:px-10 lg:px-14 lg:py-16">
+              <p className="tech-label text-slate">OPERATIONS</p>
+              <h2 className="display-section mt-3 max-w-[14ch]">
+                Restock CPE before outages start.
               </h2>
               <p className="mt-5 max-w-md text-[14px] leading-[1.5] font-medium text-slate">
-                When float is tight, routers sit in customs and outages stretch.
-                Siscom scores your M-Pesa cash flow so you can restock CPE and
-                protect subscriber uptime—without a long bank process.
+                When float is thin, routers sit in customs and tickets pile up.
+                Use your M-Pesa cash-flow score to unlock working capital and keep
+                installations moving.
               </p>
             </div>
-            <div className="relative order-1 min-h-[300px] sm:min-h-[380px] lg:order-2">
+          </div>
+        </section>
+
+        {/* Connected home */}
+        <section className="border-t border-steel">
+          <div className="grid lg:grid-cols-2">
+            <div className="order-2 flex flex-col justify-center px-4 py-14 sm:px-10 lg:order-1 lg:px-14 lg:py-16">
+              <p className="tech-label text-slate">SUBSCRIBER IMPACT</p>
+              <h2 className="display-section mt-3 max-w-[15ch]">
+                Capital that keeps households online.
+              </h2>
+              <p className="mt-5 max-w-md text-[14px] leading-[1.5] font-medium text-slate">
+                Reliable last-mile service depends on stock, fuel, and field teams.
+                Siscom scores statement performance so you can fund the work that
+                protects uptime—without a long bank process.
+              </p>
+              <div className="mt-8">
+                <Button href="#check" variant="primary" arrow>
+                  Check My Qualification
+                </Button>
+              </div>
+            </div>
+            <div className="relative order-1 aspect-[5/4] lg:order-2 lg:aspect-auto lg:min-h-[480px]">
               <Image
                 src="/images/home-speaker.jpg"
-                alt="Connected home powered by reliable ISP service"
+                alt="Connected home powered by reliable internet"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-center"
+                className="object-cover"
               />
             </div>
           </div>
         </section>
 
-        {/* Trust footer badges */}
+        {/* Trust */}
         <section id="trust" className="border-t border-steel bg-cloud">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             <h2 className="display-section max-w-3xl">
               Security designed for ODPC-minded operators.
             </h2>
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            <div className="mt-10 grid gap-10 sm:grid-cols-3">
               {[
                 {
                   title: "256-bit Encryption",
@@ -204,15 +216,12 @@ export default function HomePage() {
                   title: "ODPC Compliant",
                   body: "Explicit consent and data minimization for Kenya Data Protection Act (2019).",
                 },
-              ].map((card) => (
-                <div
-                  key={card.title}
-                  className="rounded-2xl border border-steel bg-paper p-5 shadow-[var(--shadow-technical-card)]"
-                >
-                  <span className="mb-3 inline-flex h-3 w-3 rounded-full bg-siscom" />
-                  <h3 className="text-[16px] font-semibold text-ink">{card.title}</h3>
+              ].map((item) => (
+                <div key={item.title}>
+                  <span className="mb-3 inline-flex h-2.5 w-2.5 rounded-[3px] bg-siscom" />
+                  <h3 className="text-[16px] font-semibold text-ink">{item.title}</h3>
                   <p className="mt-2 text-[14px] leading-[1.45] text-slate">
-                    {card.body}
+                    {item.body}
                   </p>
                 </div>
               ))}
