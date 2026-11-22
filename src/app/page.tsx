@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { AnnouncementStrip } from "@/components/AnnouncementStrip";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -12,9 +13,22 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero — Basis Theory–style split with isometric animation */}
+        {/* Hero — tower atmosphere + scoring diagram */}
         <section className="relative overflow-hidden border-b border-steel/70 bg-[#fafafa]">
-          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4 lg:py-16">
+          <div className="pointer-events-none absolute inset-0">
+            <Image
+              src="/images/tower.jpg"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[center_20%] opacity-[0.18] sm:opacity-[0.22]"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,#fafafa_0%,rgba(250,250,250,0.92)_42%,rgba(250,250,250,0.55)_70%,rgba(250,250,250,0.35)_100%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_40%,rgba(235,18,96,0.08),transparent_55%)]" />
+          </div>
+
+          <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4 lg:py-16">
             <div className="relative z-10 animate-rise">
               <p className="tech-label text-slate">SISCOM · ISP LENDING</p>
               <h1 className="display-hero mt-4 max-w-[13ch]">
@@ -50,7 +64,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="relative z-0 -mx-2 animate-rise sm:mx-0 lg:-mr-8" style={{ animationDelay: "120ms" }}>
+            <div
+              className="relative z-0 -mx-2 animate-rise sm:mx-0 lg:-mr-8"
+              style={{ animationDelay: "120ms" }}
+            >
               <HeroDiagram />
             </div>
           </div>
@@ -76,48 +93,95 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Upload + how it works */}
-        <section className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
-          <div id="how-it-works">
-            <h2 className="display-section">From statement to offer in three steps.</h2>
-            <p className="mt-5 max-w-lg text-[14px] leading-[1.5] font-medium text-slate">
-              We parse your official Safaricom statement in memory, verify balance
-              continuity, and compute a pre-qualified limit based on average monthly
-              net cash flow.
-            </p>
+        {/* Network gear visual + how it works */}
+        <section className="border-b border-steel">
+          <div className="mx-auto grid max-w-6xl items-stretch gap-0 lg:grid-cols-2">
+            <div className="relative min-h-[280px] overflow-hidden bg-cloud sm:min-h-[360px]">
+              <Image
+                src="/images/router.jpg"
+                alt="ISP customer premise router and network gear"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(4,8,37,0.45)_100%)]" />
+              <p className="absolute bottom-5 left-5 right-5 tech-label text-white/80">
+                Keep CPE stocked. Keep subscribers online.
+              </p>
+            </div>
 
-            <ol className="mt-8 space-y-5">
-              {[
-                {
-                  n: "01",
-                  t: "Upload",
-                  d: "Drop a 6-month M-Pesa, Till, or Paybill PDF and enter the statement password.",
-                },
-                {
-                  n: "02",
-                  t: "Score",
-                  d: "We unlock, validate continuity, and tier your multiplier up to 3.0×.",
-                },
-                {
-                  n: "03",
-                  t: "Apply",
-                  d: "Qualified ISPs submit business details — Siscom customer care finalizes disbursement.",
-                },
-              ].map((step) => (
-                <li key={step.n} className="flex gap-4">
-                  <span className="tech-label mt-1 text-slate">{step.n}</span>
-                  <div>
-                    <p className="text-[16px] font-semibold text-ink">{step.t}</p>
-                    <p className="mt-1 text-[14px] leading-[1.45] text-slate">
-                      {step.d}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <div id="how-it-works" className="px-4 py-14 sm:px-8 lg:py-16">
+              <h2 className="display-section">From statement to offer in three steps.</h2>
+              <p className="mt-5 max-w-lg text-[14px] leading-[1.5] font-medium text-slate">
+                We parse your official Safaricom statement in memory, verify balance
+                continuity, and compute a pre-qualified limit based on average monthly
+                net cash flow.
+              </p>
+
+              <ol className="mt-8 space-y-5">
+                {[
+                  {
+                    n: "01",
+                    t: "Upload",
+                    d: "Drop a 6-month M-Pesa, Till, or Paybill PDF and enter the statement password.",
+                  },
+                  {
+                    n: "02",
+                    t: "Score",
+                    d: "We unlock, validate continuity, and tier your multiplier up to 3.0×.",
+                  },
+                  {
+                    n: "03",
+                    t: "Apply",
+                    d: "Qualified ISPs submit business details — Siscom customer care finalizes disbursement.",
+                  },
+                ].map((step) => (
+                  <li key={step.n} className="flex gap-4">
+                    <span className="tech-label mt-1 text-slate">{step.n}</span>
+                    <div>
+                      <p className="text-[16px] font-semibold text-ink">{step.t}</p>
+                      <p className="mt-1 text-[14px] leading-[1.45] text-slate">
+                        {step.d}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
+        </section>
 
-          <UploadCard />
+        {/* Upload */}
+        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
+          <div className="mx-auto max-w-xl">
+            <UploadCard />
+          </div>
+        </section>
+
+        {/* Homes connected — speaker lifestyle */}
+        <section className="relative overflow-hidden border-y border-steel">
+          <div className="mx-auto grid max-w-6xl items-center lg:grid-cols-2">
+            <div className="order-2 px-4 py-14 sm:px-8 lg:order-1 lg:py-16">
+              <p className="tech-label text-slate">WHY IT MATTERS</p>
+              <h2 className="display-section mt-3 max-w-[16ch]">
+                Working capital that keeps households connected.
+              </h2>
+              <p className="mt-5 max-w-md text-[14px] leading-[1.5] font-medium text-slate">
+                When float is tight, routers sit in customs and outages stretch.
+                Siscom scores your M-Pesa cash flow so you can restock CPE and
+                protect subscriber uptime—without a long bank process.
+              </p>
+            </div>
+            <div className="relative order-1 min-h-[300px] sm:min-h-[380px] lg:order-2">
+              <Image
+                src="/images/home-speaker.jpg"
+                alt="Connected home powered by reliable ISP service"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover object-center"
+              />
+            </div>
+          </div>
         </section>
 
         {/* Trust footer badges */}
