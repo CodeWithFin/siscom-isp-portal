@@ -49,8 +49,8 @@ export function ApplicationDetail({
           <p className="tech-label text-slate">{application.reference_code}</p>
           <h1 className="feature-heading mt-1">{application.isp_name}</h1>
         </div>
-        <Button href="/admin" variant="outline">
-          Back to list
+        <Button href="/admin/applications" variant="outline">
+          Back to applications
         </Button>
       </div>
 

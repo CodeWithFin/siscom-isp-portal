@@ -46,7 +46,7 @@ App: [http://localhost:3010](http://localhost:3010)
 2. `/result/[assessmentId]` — qualification result + loan slider  
 3. `/apply/[assessmentId]` — ISP business details  
 4. `/confirmation/[referenceCode]` — handoff receipt (`SIS-ISP-XXXXXX`)  
-5. `/admin` — customer care review
+5. `/admin` — dashboard (KPIs, applications, assessments, CSV export)
 
 ## Security notes
 

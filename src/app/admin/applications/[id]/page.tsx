@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { ApplicationDetail } from "@/components/admin/ApplicationDetail";
 import { query } from "@/lib/db";
 import { requireAdmin } from "@/lib/session";
@@ -27,10 +28,8 @@ export default async function AdminApplicationPage({
   if (!assessment) notFound();
 
   return (
-    <main className="min-h-screen bg-paper">
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-        <ApplicationDetail application={application} assessment={assessment} />
-      </div>
-    </main>
+    <AdminShell title="Application detail">
+      <ApplicationDetail application={application} assessment={assessment} />
+    </AdminShell>
   );
 }
