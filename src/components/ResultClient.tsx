@@ -77,34 +77,35 @@ export function ResultClient({ assessment }: { assessment: PublicAssessment }) {
         </ul>
       ) : null}
 
+      <div className="mt-8 grid gap-3 sm:grid-cols-3">
+        {[
+          {
+            label: "Avg. Monthly Inflow",
+            value: formatKes(assessment.avgMonthlyInflow),
+          },
+          {
+            label: "Avg. Monthly Outflow",
+            value: formatKes(assessment.avgMonthlyOutflow),
+          },
+          {
+            label: "Avg. Monthly Net Cash Flow",
+            value: formatKes(assessment.avgMonthlyNetCashflow),
+          },
+        ].map((card) => (
+          <div
+            key={card.label}
+            className="rounded-2xl border border-steel bg-cloud p-4"
+          >
+            <p className="tech-label text-slate">{card.label}</p>
+            <p className="mt-2 text-[22px] font-semibold tracking-[-0.03em] text-ink">
+              {card.value}
+            </p>
+          </div>
+        ))}
+      </div>
+
       {(status === "QUALIFIED" || status === "MANUAL_REVIEW") && (
         <>
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {[
-              {
-                label: "Avg. Monthly Inflow",
-                value: formatKes(assessment.avgMonthlyInflow),
-              },
-              {
-                label: "Avg. Monthly Outflow",
-                value: formatKes(assessment.avgMonthlyOutflow),
-              },
-              {
-                label: "Avg. Monthly Net Cash Flow",
-                value: formatKes(assessment.avgMonthlyNetCashflow),
-              },
-            ].map((card) => (
-              <div
-                key={card.label}
-                className="rounded-2xl border border-steel bg-cloud p-4"
-              >
-                <p className="tech-label text-slate">{card.label}</p>
-                <p className="mt-2 text-[22px] font-semibold tracking-[-0.03em] text-ink">
-                  {card.value}
-                </p>
-              </div>
-            ))}
-          </div>
 
           {status === "QUALIFIED" ? (
             <div className="mt-8 rounded-2xl border border-steel bg-paper p-5 shadow-[var(--shadow-technical-card)]">

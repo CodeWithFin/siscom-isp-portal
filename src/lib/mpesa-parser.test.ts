@@ -92,9 +92,9 @@ function makeFlatRows(n: number): string {
 }
 
 {
-  // Mis-assigned amount columns but valid running balances
+  // Empty movement cells — fill from balance delta
   let bal = 10000;
-  const broken = Array.from({ length: 20 }, (_, i) => {
+  const gaps = Array.from({ length: 20 }, (_, i) => {
     const inflow = i % 2 === 0;
     const move = 500 + i * 10;
     bal = inflow ? bal + move : bal - move;
@@ -103,19 +103,41 @@ function makeFlatRows(n: number): string {
       timestamp: new Date(Date.UTC(2025, 5, 1 + i, 10, 0, 0)),
       details: inflow ? "Customer Payment from 254712345678" : "Pay Bill Charge",
       status: "Completed",
-      // Intentionally wrong: put balance into paidIn, zero elsewhere
-      paidIn: bal,
+      paidIn: 0,
       withdrawn: 0,
       balance: bal,
     };
   });
 
-  const healed = reconcileAmountsFromBalances(broken);
-  const continuity = verifyBalanceContinuity(healed);
-  assert.equal(continuity.ok, true, `healed continuity failed: ${continuity.failedRows}`);
-  assert.ok(healed.some((t) => t.paidIn === 500 || t.withdrawn > 0));
+  const healed = reconcileAmountsFromBalances(gaps);
+  assert.ok(healed.some((t) => t.paidIn >= 500));
+  assert.ok(healed.some((t) => t.withdrawn >= 500));
+  assert.equal(verifyBalanceContinuity(healed).ok, true);
+}
 
-  const scored = scoreTransactions(healed);
+{
+  // Pass-through till: large gross volumes, flat balance — must keep declared amounts
+  let bal = 80000;
+  const till = Array.from({ length: 30 }, (_, i) => {
+    const paidIn = 20000 + (i % 5) * 1000;
+    const withdrawn = 19500 + (i % 5) * 1000;
+    bal = bal + paidIn - withdrawn;
+    return {
+      receipt: `TIL${String(5000000 + i).padStart(7, "0")}`,
+      timestamp: new Date(Date.UTC(2025, 0, 1 + i, 12, 0, 0)),
+      details: "Customer Payment from 254700000001",
+      status: "Completed",
+      paidIn,
+      withdrawn,
+      balance: bal,
+    };
+  });
+
+  const kept = reconcileAmountsFromBalances(till);
+  assert.equal(kept[1].paidIn, till[1].paidIn);
+  assert.equal(kept[1].withdrawn, till[1].withdrawn);
+  const scored = scoreTransactions(kept);
+  assert.ok(scored.avgMonthlyInflow > 100000);
   assert.notEqual(scored.qualificationStatus, "TAMPERED_REJECTED");
 }
 

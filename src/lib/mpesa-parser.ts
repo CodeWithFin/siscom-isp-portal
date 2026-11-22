@@ -417,9 +417,9 @@ function round2(n: number): number {
 }
 
 /**
- * Rebuild paid-in / withdrawn from consecutive balance deltas.
- * PDF extraction often mis-assigns the three amount columns; the running
- * Balance column on official Safaricom statements is the reliable signal.
+ * Only fill missing movement amounts from balance deltas.
+ * Never overwrite declared Paid In / Withdrawn — ISP tills are pass-through
+ * accounts where balance barely moves but gross cash flow is large.
  */
 export function reconcileAmountsFromBalances(
   transactions: MpesaTransaction[],
@@ -437,24 +437,16 @@ export function reconcileAmountsFromBalances(
     const prev = out[i - 1];
     const curr = { ...transactions[i] };
     const delta = round2(curr.balance - prev.balance);
-    const declared = round2(curr.paidIn - curr.withdrawn);
+    const hasDeclared = curr.paidIn > 0.009 || curr.withdrawn > 0.009;
 
-    if (Math.abs(delta - declared) > 1) {
+    // Gap-fill only when the PDF row had empty movement cells
+    if (!hasDeclared && Math.abs(delta) > 1) {
       if (delta >= 0) {
         curr.paidIn = Math.abs(delta);
         curr.withdrawn = 0;
       } else {
         curr.paidIn = 0;
         curr.withdrawn = Math.abs(delta);
-      }
-    } else if (curr.paidIn > 0 && curr.withdrawn > 0) {
-      // M-Pesa rows are almost always one-sided
-      if (delta >= 0) {
-        curr.paidIn = Math.abs(delta) || curr.paidIn;
-        curr.withdrawn = 0;
-      } else {
-        curr.paidIn = 0;
-        curr.withdrawn = Math.abs(delta) || curr.withdrawn;
       }
     }
 
