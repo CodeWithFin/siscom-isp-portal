@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { AnnouncementStrip } from "@/components/AnnouncementStrip";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -13,10 +12,9 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero — copy on paper, tower + diagram on the right */}
         <section className="relative overflow-hidden border-b border-steel/70 bg-paper">
-          <div className="mx-auto grid max-w-6xl lg:grid-cols-2 lg:items-stretch">
-            <div className="flex flex-col justify-center px-4 py-12 sm:px-6 lg:py-16 animate-rise">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4 lg:py-16">
+            <div className="relative z-10 animate-rise">
               <p className="tech-label text-slate">SISCOM · ISP LENDING</p>
               <h1 className="display-hero mt-4 max-w-[13ch]">
                 Unlock Working Capital for Your ISP in Minutes.
@@ -52,38 +50,25 @@ export default function HomePage() {
             </div>
 
             <div
-              className="relative min-h-[420px] overflow-hidden bg-[#0b1c3a] sm:min-h-[520px] lg:min-h-full animate-rise"
-              style={{ animationDelay: "100ms" }}
+              className="relative z-0 -mx-2 animate-rise sm:mx-0 lg:-mr-8"
+              style={{ animationDelay: "120ms" }}
             >
-              <Image
-                src="/images/tower.jpg"
-                alt=""
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="animate-hero-drift object-cover object-[center_22%]"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(4,8,37,0.45)_0%,rgba(4,8,37,0.12)_45%,rgba(4,8,37,0.28)_100%)]" />
-              <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-                <div className="w-full max-w-[520px] scale-[0.92] sm:scale-100">
-                  <HeroDiagram />
-                </div>
-              </div>
+              <HeroDiagram />
             </div>
           </div>
         </section>
 
-        {/* Trust strip */}
         <section className="hatched-band">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-4 py-10 sm:px-6">
-            <p className="max-w-md text-[18px] font-medium text-white/75">
-              Built for Kenyan ISPs who keep the network running.
+            <p className="max-w-md text-[18px] font-medium text-white/70">
+              Built for Kenyan ISPs who need working capital without the paperwork
+              maze.
             </p>
             <div className="flex flex-wrap gap-3">
               {["M-Pesa Personal", "Till", "Paybill"].map((label) => (
                 <span
                   key={label}
-                  className="rounded-[35px] border border-white/40 px-4 py-2 text-[13px] font-medium text-paper"
+                  className="rounded-[35px] border border-white/40 bg-transparent px-4 py-2 text-[13px] font-medium text-paper"
                 >
                   {label}
                 </span>
@@ -92,12 +77,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* How it works + upload */}
-        <section
-          id="how-it-works"
-          className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-20"
-        >
-          <div>
+        <section className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+          <div id="how-it-works">
             <h2 className="display-section">From statement to offer in three steps.</h2>
             <p className="mt-5 max-w-lg text-[14px] leading-[1.5] font-medium text-slate">
               We parse your official Safaricom statement in memory, verify balance
@@ -139,70 +120,12 @@ export default function HomePage() {
           <UploadCard />
         </section>
 
-        {/* Router — edge-to-edge media + copy */}
-        <section className="border-t border-steel">
-          <div className="grid lg:grid-cols-2">
-            <div className="relative aspect-[5/4] lg:aspect-auto lg:min-h-[480px]">
-              <Image
-                src="/images/router.jpg"
-                alt="Customer-premise router used by ISP operators"
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="flex flex-col justify-center bg-cloud px-4 py-14 sm:px-10 lg:px-14 lg:py-16">
-              <p className="tech-label text-slate">OPERATIONS</p>
-              <h2 className="display-section mt-3 max-w-[14ch]">
-                Restock CPE before outages start.
-              </h2>
-              <p className="mt-5 max-w-md text-[14px] leading-[1.5] font-medium text-slate">
-                When float is thin, routers sit in customs and tickets pile up.
-                Use your M-Pesa cash-flow score to unlock working capital and keep
-                installations moving.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Connected home */}
-        <section className="border-t border-steel">
-          <div className="grid lg:grid-cols-2">
-            <div className="order-2 flex flex-col justify-center px-4 py-14 sm:px-10 lg:order-1 lg:px-14 lg:py-16">
-              <p className="tech-label text-slate">SUBSCRIBER IMPACT</p>
-              <h2 className="display-section mt-3 max-w-[15ch]">
-                Capital that keeps households online.
-              </h2>
-              <p className="mt-5 max-w-md text-[14px] leading-[1.5] font-medium text-slate">
-                Reliable last-mile service depends on stock, fuel, and field teams.
-                Siscom scores statement performance so you can fund the work that
-                protects uptime—without a long bank process.
-              </p>
-              <div className="mt-8">
-                <Button href="#check" variant="primary" arrow>
-                  Check My Qualification
-                </Button>
-              </div>
-            </div>
-            <div className="relative order-1 aspect-[5/4] lg:order-2 lg:aspect-auto lg:min-h-[480px]">
-              <Image
-                src="/images/home-speaker.jpg"
-                alt="Connected home powered by reliable internet"
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Trust */}
         <section id="trust" className="border-t border-steel bg-cloud">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             <h2 className="display-section max-w-3xl">
               Security designed for ODPC-minded operators.
             </h2>
-            <div className="mt-10 grid gap-10 sm:grid-cols-3">
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {[
                 {
                   title: "256-bit Encryption",
@@ -216,12 +139,15 @@ export default function HomePage() {
                   title: "ODPC Compliant",
                   body: "Explicit consent and data minimization for Kenya Data Protection Act (2019).",
                 },
-              ].map((item) => (
-                <div key={item.title}>
-                  <span className="mb-3 inline-flex h-2.5 w-2.5 rounded-[3px] bg-siscom" />
-                  <h3 className="text-[16px] font-semibold text-ink">{item.title}</h3>
+              ].map((card) => (
+                <div
+                  key={card.title}
+                  className="rounded-2xl border border-steel bg-paper p-5 shadow-[var(--shadow-technical-card)]"
+                >
+                  <span className="mb-3 inline-flex h-3 w-3 rounded-full bg-siscom" />
+                  <h3 className="text-[16px] font-semibold text-ink">{card.title}</h3>
                   <p className="mt-2 text-[14px] leading-[1.45] text-slate">
-                    {item.body}
+                    {card.body}
                   </p>
                 </div>
               ))}
