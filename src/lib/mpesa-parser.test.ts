@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
-import { parseMpesaStatementText } from "./mpesa-parser";
+import {
+  parseMpesaStatementText,
+  reconcileAmountsFromBalances,
+} from "./mpesa-parser";
+import { scoreTransactions, verifyBalanceContinuity } from "./scoring";
 
 function makeStacked(n: number): string {
   const lines: string[] = [
@@ -85,6 +89,34 @@ function makeFlatRows(n: number): string {
   }
   const txs = parseMpesaStatementText(parts.join(" "));
   assert.ok(txs.length >= 10, `stream expected >=10 got ${txs.length}`);
+}
+
+{
+  // Mis-assigned amount columns but valid running balances
+  let bal = 10000;
+  const broken = Array.from({ length: 20 }, (_, i) => {
+    const inflow = i % 2 === 0;
+    const move = 500 + i * 10;
+    bal = inflow ? bal + move : bal - move;
+    return {
+      receipt: `XYZ${String(4000000 + i).padStart(7, "0")}`,
+      timestamp: new Date(Date.UTC(2025, 5, 1 + i, 10, 0, 0)),
+      details: inflow ? "Customer Payment from 254712345678" : "Pay Bill Charge",
+      status: "Completed",
+      // Intentionally wrong: put balance into paidIn, zero elsewhere
+      paidIn: bal,
+      withdrawn: 0,
+      balance: bal,
+    };
+  });
+
+  const healed = reconcileAmountsFromBalances(broken);
+  const continuity = verifyBalanceContinuity(healed);
+  assert.equal(continuity.ok, true, `healed continuity failed: ${continuity.failedRows}`);
+  assert.ok(healed.some((t) => t.paidIn === 500 || t.withdrawn > 0));
+
+  const scored = scoreTransactions(healed);
+  assert.notEqual(scored.qualificationStatus, "TAMPERED_REJECTED");
 }
 
 console.log("mpesa-parser tests passed");

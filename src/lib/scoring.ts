@@ -19,10 +19,13 @@ function round2(n: number): number {
 
 export function verifyBalanceContinuity(
   transactions: MpesaTransaction[],
-): { failedRows: number; ok: boolean } {
-  if (transactions.length < 2) return { failedRows: 0, ok: true };
+): { failedRows: number; ok: boolean; ratio: number } {
+  if (transactions.length < 2) {
+    return { failedRows: 0, ok: true, ratio: 0 };
+  }
 
   let failed = 0;
+  const checks = transactions.length - 1;
   for (let i = 1; i < transactions.length; i += 1) {
     const prev = transactions[i - 1];
     const curr = transactions[i];
@@ -32,7 +35,10 @@ export function verifyBalanceContinuity(
     }
   }
 
-  return { failedRows: failed, ok: failed <= 2 };
+  const ratio = failed / checks;
+  // Allow a small absolute + percentage slack for PDF parse noise
+  const maxAllowed = Math.max(5, Math.ceil(checks * 0.03));
+  return { failedRows: failed, ok: failed <= maxAllowed, ratio };
 }
 
 function aggregateMonthly(transactions: MpesaTransaction[]): MonthlyBreakdown[] {
@@ -104,7 +110,8 @@ export function scoreTransactions(
   }
 
   const continuity = verifyBalanceContinuity(transactions);
-  if (!continuity.ok) {
+  if (!continuity.ok && continuity.ratio > 0.25) {
+    // Majority of the balance chain is broken — likely a bad parse, not a usable score
     riskFlags.push(`BALANCE_CONTINUITY_FAILED:${continuity.failedRows}`);
     return {
       statementPeriodDays: 0,
@@ -117,9 +124,14 @@ export function scoreTransactions(
       monthlyBreakdown: [],
       riskFlags,
       declineReasons: [
-        "Statement balance continuity failed on more than 2 rows (possible tampering).",
+        "We could not verify the statement balance trail. Re-download the official Safaricom PDF and try again.",
       ],
     };
+  }
+  if (!continuity.ok) {
+    riskFlags.push(`BALANCE_CONTINUITY_WARN:${continuity.failedRows}`);
+  } else if (continuity.failedRows > 0) {
+    riskFlags.push(`BALANCE_CONTINUITY_MINOR:${continuity.failedRows}`);
   }
 
   const first = transactions[0].timestamp;

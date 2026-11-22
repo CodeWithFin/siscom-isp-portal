@@ -96,12 +96,11 @@ export function parseMpesaStatementText(text: string): MpesaTransaction[] {
     .filter(Boolean);
 
   const fromLines = parseLineOriented(lines);
-  if (fromLines.length >= 10) return dedupeAndSort(fromLines);
-
   const fromStream = parseTokenStream(normalized);
-  if (fromStream.length >= fromLines.length) return dedupeAndSort(fromStream);
+  const chosen =
+    fromStream.length > fromLines.length ? fromStream : fromLines;
 
-  return dedupeAndSort(fromLines);
+  return reconcileAmountsFromBalances(dedupeAndSort(chosen));
 }
 
 function parseLineOriented(lines: string[]): MpesaTransaction[] {
@@ -401,11 +400,68 @@ function dedupeAndSort(transactions: MpesaTransaction[]): MpesaTransaction[] {
   const seen = new Set<string>();
   return transactions
     .filter((tx) => {
+      // Score completed/success rows only — failed rows break balance chains
+      if (tx.status && !/^(completed|success)$/i.test(tx.status)) return false;
       if (seen.has(tx.receipt)) return false;
       seen.add(tx.receipt);
       return true;
     })
-    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+    .sort((a, b) => {
+      const t = a.timestamp.getTime() - b.timestamp.getTime();
+      return t !== 0 ? t : a.receipt.localeCompare(b.receipt);
+    });
+}
+
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+/**
+ * Rebuild paid-in / withdrawn from consecutive balance deltas.
+ * PDF extraction often mis-assigns the three amount columns; the running
+ * Balance column on official Safaricom statements is the reliable signal.
+ */
+export function reconcileAmountsFromBalances(
+  transactions: MpesaTransaction[],
+): MpesaTransaction[] {
+  if (transactions.length < 2) return transactions;
+
+  const withBalance = transactions.filter((tx) => tx.balance > 0).length;
+  if (withBalance < Math.max(5, transactions.length * 0.4)) {
+    return transactions;
+  }
+
+  const out: MpesaTransaction[] = [{ ...transactions[0] }];
+
+  for (let i = 1; i < transactions.length; i += 1) {
+    const prev = out[i - 1];
+    const curr = { ...transactions[i] };
+    const delta = round2(curr.balance - prev.balance);
+    const declared = round2(curr.paidIn - curr.withdrawn);
+
+    if (Math.abs(delta - declared) > 1) {
+      if (delta >= 0) {
+        curr.paidIn = Math.abs(delta);
+        curr.withdrawn = 0;
+      } else {
+        curr.paidIn = 0;
+        curr.withdrawn = Math.abs(delta);
+      }
+    } else if (curr.paidIn > 0 && curr.withdrawn > 0) {
+      // M-Pesa rows are almost always one-sided
+      if (delta >= 0) {
+        curr.paidIn = Math.abs(delta) || curr.paidIn;
+        curr.withdrawn = 0;
+      } else {
+        curr.paidIn = 0;
+        curr.withdrawn = Math.abs(delta) || curr.withdrawn;
+      }
+    }
+
+    out.push(curr);
+  }
+
+  return out;
 }
 
 /**
