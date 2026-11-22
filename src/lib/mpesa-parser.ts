@@ -95,12 +95,36 @@ export function parseMpesaStatementText(text: string): MpesaTransaction[] {
     .map((l) => l.trim())
     .filter(Boolean);
 
-  const fromLines = parseLineOriented(lines);
-  const fromStream = parseTokenStream(normalized);
-  const chosen =
-    fromStream.length > fromLines.length ? fromStream : fromLines;
+  const fromLines = reconcileAmountsFromBalances(
+    dedupeAndSort(parseLineOriented(lines)),
+  );
+  const fromStream = reconcileAmountsFromBalances(
+    dedupeAndSort(parseTokenStream(normalized)),
+  );
 
-  return reconcileAmountsFromBalances(dedupeAndSort(chosen));
+  return pickBestParse(fromLines, fromStream);
+}
+
+function parseVolume(transactions: MpesaTransaction[]): number {
+  return transactions.reduce((sum, tx) => sum + tx.paidIn + tx.withdrawn, 0);
+}
+
+function pickBestParse(
+  a: MpesaTransaction[],
+  b: MpesaTransaction[],
+): MpesaTransaction[] {
+  if (a.length < 10 && b.length < 10) {
+    return a.length >= b.length ? a : b;
+  }
+  if (a.length < 10) return b;
+  if (b.length < 10) return a;
+
+  const volA = parseVolume(a);
+  const volB = parseVolume(b);
+  // Prefer the parse that captured more cash movement (Paid In + Withdrawn)
+  if (volA > volB * 1.15) return a;
+  if (volB > volA * 1.15) return b;
+  return a.length >= b.length ? a : b;
 }
 
 function parseLineOriented(lines: string[]): MpesaTransaction[] {

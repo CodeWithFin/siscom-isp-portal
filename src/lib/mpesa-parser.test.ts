@@ -141,4 +141,25 @@ function makeFlatRows(n: number): string {
   assert.notEqual(scored.qualificationStatus, "TAMPERED_REJECTED");
 }
 
+{
+  // Broken balance trail must still score cash flow (not hard-reject)
+  const messy = Array.from({ length: 40 }, (_, i) => ({
+    receipt: `MES${String(6000000 + i).padStart(7, "0")}`,
+    timestamp: new Date(Date.UTC(2025, 1, 1 + Math.floor(i / 2), 9, i % 60, 0)),
+    details: "Customer Payment from 254711111111",
+    status: "Completed",
+    paidIn: 25000,
+    withdrawn: 5000,
+    balance: 1000 + i, // intentionally inconsistent with movements
+  }));
+  const scored = scoreTransactions(messy);
+  assert.ok(scored.avgMonthlyInflow > 0);
+  assert.notEqual(scored.qualificationStatus, "TAMPERED_REJECTED");
+  assert.ok(
+    scored.qualificationStatus === "MANUAL_REVIEW" ||
+      scored.qualificationStatus === "QUALIFIED" ||
+      scored.qualificationStatus === "NOT_QUALIFIED",
+  );
+}
+
 console.log("mpesa-parser tests passed");

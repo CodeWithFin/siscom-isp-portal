@@ -109,26 +109,14 @@ export function scoreTransactions(
     };
   }
 
+  // Balance continuity is a risk signal only — never hard-zero a score.
+  // PDF extraction often misreads the Balance column on Till/Paybill layouts
+  // while Paid In / Withdrawn (cash-flow) remain usable.
   const continuity = verifyBalanceContinuity(transactions);
-  if (!continuity.ok && continuity.ratio > 0.25) {
-    // Majority of the balance chain is broken — likely a bad parse, not a usable score
+  const continuityUnreliable = !continuity.ok && continuity.ratio > 0.15;
+  if (continuityUnreliable) {
     riskFlags.push(`BALANCE_CONTINUITY_FAILED:${continuity.failedRows}`);
-    return {
-      statementPeriodDays: 0,
-      avgMonthlyInflow: 0,
-      avgMonthlyOutflow: 0,
-      avgMonthlyNetCashflow: 0,
-      multiplier: 0,
-      maxQualifiedAmount: 0,
-      qualificationStatus: "TAMPERED_REJECTED",
-      monthlyBreakdown: [],
-      riskFlags,
-      declineReasons: [
-        "We could not verify the statement balance trail. Re-download the official Safaricom PDF and try again.",
-      ],
-    };
-  }
-  if (!continuity.ok) {
+  } else if (!continuity.ok) {
     riskFlags.push(`BALANCE_CONTINUITY_WARN:${continuity.failedRows}`);
   } else if (continuity.failedRows > 0) {
     riskFlags.push(`BALANCE_CONTINUITY_MINOR:${continuity.failedRows}`);
@@ -221,6 +209,21 @@ export function scoreTransactions(
     riskFlags.push("IRREGULAR_OR_MIXED_STATEMENT");
   }
 
+  // Unreliable balance trail → customer care review instead of auto-approve
+  if (status === "QUALIFIED" && continuityUnreliable) {
+    status = "MANUAL_REVIEW";
+    riskFlags.push("IRREGULAR_OR_MIXED_STATEMENT");
+  } else if (
+    status === "NOT_QUALIFIED" &&
+    continuityUnreliable &&
+    avgNet >= 15_000 &&
+    periodDays >= 120
+  ) {
+    multiplier = Math.max(multiplier, 1.0);
+    status = "MANUAL_REVIEW";
+    riskFlags.push("IRREGULAR_OR_MIXED_STATEMENT");
+  }
+
   if (status === "NOT_QUALIFIED" && declineReasons.length === 0) {
     declineReasons.push(
       "Cash-flow profile did not meet the minimum qualification thresholds.",
@@ -228,7 +231,6 @@ export function scoreTransactions(
   }
 
   if (status === "QUALIFIED" && mixed) {
-    // still allow qualify but flag
     riskFlags.push("MIXED_PERSONAL_BUSINESS_SIGNALS");
   }
 
