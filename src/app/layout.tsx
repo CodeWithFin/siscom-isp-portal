@@ -39,9 +39,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Siscom ISP Credit Scoring & Loan Eligibility",
+  title: "Siscom ISP Growth — Infrastructure, WASP Billing & Working Capital",
   description:
-    "Upload your 6-month M-Pesa statement to instantly check ISP loan qualification—up to 3x your monthly net cash flow. No account required.",
+    "Grow your ISP network. Finance infrastructure, run billing on WASP, collect through Cashia, and unlock working capital from KES 100,000 to KES 10 million.",
   icons: {
     icon: "/brand/siscom-favicon.png",
     apple: "/brand/siscom-favicon.png",

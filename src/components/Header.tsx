@@ -12,7 +12,16 @@ export function Header() {
             href="/#how-it-works"
             className="text-nav text-[#353535] hover:text-siscom"
           >
-            How It Works
+            How it works
+          </a>
+          <a
+            href="/#financing"
+            className="text-nav text-[#353535] hover:text-siscom"
+          >
+            Financing
+          </a>
+          <a href="/#wasp" className="text-nav text-[#353535] hover:text-siscom">
+            WASP billing
           </a>
           <a href="/#trust" className="text-nav text-[#353535] hover:text-siscom">
             Security
