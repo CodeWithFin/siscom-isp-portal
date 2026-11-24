@@ -8,8 +8,13 @@ const NAV = [
   { href: "/admin", label: "Overview", match: (p: string) => p === "/admin" },
   {
     href: "/admin/applications",
-    label: "Applications",
+    label: "WC Loans",
     match: (p: string) => p.startsWith("/admin/applications"),
+  },
+  {
+    href: "/admin/growth",
+    label: "Growth",
+    match: (p: string) => p.startsWith("/admin/growth"),
   },
   {
     href: "/admin/assessments",

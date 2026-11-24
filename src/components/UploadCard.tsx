@@ -88,10 +88,7 @@ export function UploadCard() {
   }
 
   return (
-    <div
-      id="check"
-      className="rounded-2xl border border-steel bg-cloud p-0 shadow-[var(--shadow-cloud-card)]"
-    >
+    <div className="rounded-2xl border border-steel bg-cloud p-0 shadow-[var(--shadow-cloud-card)]">
       <div className="rounded-2xl bg-paper p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <div>
