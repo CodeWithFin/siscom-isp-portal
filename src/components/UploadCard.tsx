@@ -14,7 +14,6 @@ export function UploadCard() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [password, setPassword] = useState("");
   const [consent, setConsent] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,10 +47,6 @@ export function UploadCard() {
       setError("Upload your M-Pesa PDF statement.");
       return;
     }
-    if (!demo && !password.trim()) {
-      setError("Enter the M-Pesa statement password.");
-      return;
-    }
 
     setLoading(true);
     setStage(0);
@@ -66,7 +61,6 @@ export function UploadCard() {
         form.set("demo", "true");
       } else if (file) {
         form.set("file", file);
-        form.set("password", password);
       }
       form.set("consent", "true");
 
@@ -141,19 +135,6 @@ export function UploadCard() {
             Upload your official 6-month M-Pesa or Till/Paybill PDF statement.
           </p>
         </div>
-
-        <label className="mt-4 block">
-          <span className="text-[13px] font-medium text-charcoal">
-            M-Pesa statement password
-          </span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter M-Pesa statement password"
-            className="mt-2 w-full rounded-xl border border-steel bg-paper px-3 py-3 text-[14px] text-ink outline-none transition focus:border-ink"
-          />
-        </label>
 
         <label className="mt-4 flex items-start gap-3">
           <input

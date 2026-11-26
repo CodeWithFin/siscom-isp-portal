@@ -114,7 +114,7 @@ export function GrowthConfirmation({
         <Button href="/" variant="outline">
           Return home
         </Button>
-        <Button href="/#check" variant="primary">
+        <Button href="/check" variant="primary">
           Check working capital
         </Button>
       </div>

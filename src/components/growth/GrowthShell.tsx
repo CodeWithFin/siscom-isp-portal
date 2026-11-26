@@ -1,14 +1,6 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { GrowthCartProvider } from "@/lib/growth-cart";
-import { GrowthConsole } from "./GrowthConsole";
 
+/** Cart provider lives in root `Providers`; this is a layout passthrough. */
 export function GrowthShell({ children }: { children: ReactNode }) {
-  return (
-    <GrowthCartProvider>
-      {children}
-      <GrowthConsole />
-    </GrowthCartProvider>
-  );
+  return <>{children}</>;
 }

@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 import {
   defaultConfig,
   type CartItem,
@@ -16,8 +17,6 @@ import {
 } from "@/lib/growth-catalog";
 
 const STORAGE_KEY = "siscom-growth-cart-v1";
-
-export type ConsoleMode = "closed" | "config" | "checkout";
 
 export type IspDetails = {
   name: string;
@@ -53,15 +52,12 @@ type GrowthCartContextValue = {
   removeItem: (id: string) => void;
   updatePlan: (id: string, plan: string) => void;
   clearCart: () => void;
-  mode: ConsoleMode;
-  configProductId: string | null;
   checkoutStep: number;
   isp: IspDetails;
   fin: FinState;
   terms: TermsState;
   openConfig: (productId: string) => void;
   openCheckout: (opts?: { billing?: boolean }) => void;
-  closeConsole: () => void;
   setCheckoutStep: (step: number) => void;
   setIsp: (patch: Partial<IspDetails>) => void;
   setFin: (patch: Partial<FinState>) => void;
@@ -113,10 +109,9 @@ function loadCart(): CartItem[] {
 }
 
 export function GrowthCartProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
-  const [mode, setMode] = useState<ConsoleMode>("closed");
-  const [configProductId, setConfigProductId] = useState<string | null>(null);
   const [checkoutStep, setCheckoutStep] = useState(0);
   const [isp, setIspState] = useState<IspDetails>(blankIsp);
   const [fin, setFinState] = useState<FinState>(blankFin);
@@ -132,21 +127,13 @@ export function GrowthCartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
   }, [cart, hydrated]);
 
-  useEffect(() => {
-    if (mode === "closed") {
-      document.body.style.overflow = "";
-      return;
-    }
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mode]);
-
   const addItem = useCallback((item: Omit<CartItem, "id">) => {
     setCart((prev) => [
       ...prev,
-      { ...item, id: `${item.productId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}` },
+      {
+        ...item,
+        id: `${item.productId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      },
     ]);
   }, []);
 
@@ -160,24 +147,24 @@ export function GrowthCartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(() => setCart([]), []);
 
-  const openConfig = useCallback((productId: string) => {
-    if (!getProduct(productId)) return;
-    setConfigProductId(productId);
-    setMode("config");
-  }, []);
+  const openConfig = useCallback(
+    (productId: string) => {
+      if (!getProduct(productId)) return;
+      router.push(`/checkout/configure/${productId}`);
+    },
+    [router],
+  );
 
-  const openCheckout = useCallback((opts?: { billing?: boolean }) => {
-    setMode("checkout");
-    setCheckoutStep(opts?.billing && cart.length === 0 ? 1 : 0);
-    if (opts?.billing) {
-      setFinState((f) => ({ ...f, want: true }));
-    }
-  }, [cart.length]);
-
-  const closeConsole = useCallback(() => {
-    setMode("closed");
-    setConfigProductId(null);
-  }, []);
+  const openCheckout = useCallback(
+    (opts?: { billing?: boolean }) => {
+      setCheckoutStep(opts?.billing && cart.length === 0 ? 1 : 0);
+      if (opts?.billing) {
+        setFinState((f) => ({ ...f, want: true }));
+      }
+      router.push("/checkout");
+    },
+    [cart.length, router],
+  );
 
   const setIsp = useCallback((patch: Partial<IspDetails>) => {
     setIspState((prev) => ({ ...prev, ...patch }));
@@ -196,7 +183,6 @@ export function GrowthCartProvider({ children }: { children: ReactNode }) {
     setIspState(blankIsp());
     setFinState(blankFin());
     setTermsState(blankTerms());
-    setConfigProductId(null);
   }, []);
 
   const value = useMemo(
@@ -206,15 +192,12 @@ export function GrowthCartProvider({ children }: { children: ReactNode }) {
       removeItem,
       updatePlan,
       clearCart,
-      mode,
-      configProductId,
       checkoutStep,
       isp,
       fin,
       terms,
       openConfig,
       openCheckout,
-      closeConsole,
       setCheckoutStep,
       setIsp,
       setFin,
@@ -227,15 +210,12 @@ export function GrowthCartProvider({ children }: { children: ReactNode }) {
       removeItem,
       updatePlan,
       clearCart,
-      mode,
-      configProductId,
       checkoutStep,
       isp,
       fin,
       terms,
       openConfig,
       openCheckout,
-      closeConsole,
       setIsp,
       setFin,
       setTerms,

@@ -82,24 +82,20 @@ export async function POST(request: Request) {
         );
       }
 
-      if (!password.trim()) {
-        return NextResponse.json(
-          { error: "M-Pesa statement password is required." },
-          { status: 400 },
-        );
-      }
-
       const buffer = Buffer.from(await file.arrayBuffer());
       statementSha = hashBuffer(buffer);
 
       let text: string;
       try {
-        text = await extractPdfText(buffer, password.trim());
+        text = await extractPdfText(buffer, password.trim() || undefined);
       } catch (err) {
         const message = err instanceof Error ? err.message : "PDF unlock failed";
         if (/password/i.test(message)) {
           return NextResponse.json(
-            { error: "Incorrect PDF password. Please try again." },
+            {
+              error:
+                "This PDF is password-protected. Upload an unlocked statement PDF.",
+            },
             { status: 400 },
           );
         }
@@ -119,7 +115,7 @@ export async function POST(request: Request) {
           {
             error:
               transactions.length === 0
-                ? "Could not read transactions from this PDF. Use an official Safaricom M-Pesa / Till / Paybill statement and the SMS password."
+                ? "Could not read transactions from this PDF. Use an official Safaricom M-Pesa / Till / Paybill statement."
                 : `Only ${transactions.length} transactions were found. Upload a full official 6-month statement PDF.`,
           },
           { status: 422 },

@@ -3,6 +3,7 @@ import { AnnouncementStrip } from "@/components/AnnouncementStrip";
 import { ApplyForm } from "@/components/ApplyForm";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { GrowthShell } from "@/components/growth/GrowthShell";
 import { getAssessmentById, toPublicAssessment } from "@/lib/assessments";
 import { getAssessmentCookie, hashToken, safeEqual } from "@/lib/session";
 
@@ -16,11 +17,11 @@ export default async function ApplyPage({
   const { assessmentId } = await params;
   const { amount } = await searchParams;
   const token = await getAssessmentCookie();
-  if (!token) redirect("/");
+  if (!token) redirect("/check");
 
   const row = await getAssessmentById(assessmentId);
   if (!row || !safeEqual(row.session_token_hash, hashToken(token))) {
-    redirect("/");
+    redirect("/check");
   }
 
   if (
@@ -38,13 +39,13 @@ export default async function ApplyPage({
   const initialAmount = Number(amount) || assessment.maxQualifiedAmount;
 
   return (
-    <>
+    <GrowthShell>
       <AnnouncementStrip />
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 bg-[linear-gradient(180deg,#F7F5F8_0%,#FFFFFF_42%)]">
         <ApplyForm assessment={assessment} initialAmount={initialAmount} />
       </main>
       <Footer />
-    </>
+    </GrowthShell>
   );
 }

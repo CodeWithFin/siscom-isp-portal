@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "./ui/Button";
 
 export function AnnouncementStrip() {
@@ -8,7 +10,11 @@ export function AnnouncementStrip() {
           For Tier 4 and 5 ISPs · Growth and working capital from KES 100,000 to
           KES 10 million.
         </p>
-        <Button href="/#check" variant="nav" className="hidden shrink-0 sm:inline-flex">
+        <Button
+          href="/check"
+          variant="nav"
+          className="hidden shrink-0 sm:inline-flex"
+        >
           Check now
         </Button>
       </div>

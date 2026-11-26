@@ -1,8 +1,8 @@
 import { AnnouncementStrip } from "@/components/AnnouncementStrip";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { HeroDiagram } from "@/components/HeroDiagram";
-import { UploadCard } from "@/components/UploadCard";
+import { HeroCreditCard } from "@/components/HeroCreditCard";
+import { HowItWorks } from "@/components/HowItWorks";
 import { Button } from "@/components/ui/Button";
 import { CatalogueGrid } from "@/components/growth/CatalogueGrid";
 import { FinanceCta, HeroGrowthCtas } from "@/components/growth/FinanceCtas";
@@ -13,21 +13,25 @@ const STEPS = [
     n: "01",
     t: "Choose",
     d: "Add infrastructure to your plan, or go straight to working-capital scoring.",
+    icon: "choose" as const,
   },
   {
     n: "02",
     t: "Configure",
     d: "Tell us quantities, sites and capacity. Pay upfront or lease over 12–36 months.",
+    icon: "configure" as const,
   },
   {
     n: "03",
     t: "Get scored",
     d: "Share billing and M-Pesa data with Mkash, our licensed credit partner, for a limit.",
+    icon: "score" as const,
   },
   {
     n: "04",
     t: "Grow",
     d: "A Siscom associate completes onboarding. You build, bill on WASP, and repay automatically.",
+    icon: "grow" as const,
   },
 ];
 
@@ -106,10 +110,7 @@ export default function HomePage() {
         <section className="relative overflow-hidden border-b border-steel/70 bg-paper">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4 lg:py-16">
             <div className="relative z-10 animate-rise">
-              <p className="tech-label text-slate">
-                FOR TIER 4 AND 5 ISPS · KENYA
-              </p>
-              <h1 className="display-hero mt-4 max-w-[16ch]">
+              <h1 className="display-hero max-w-[16ch]">
                 Grow your network. Repay as your subscribers pay.
               </h1>
               <p className="mt-6 max-w-xl text-[14px] leading-[1.5] font-medium text-slate">
@@ -146,7 +147,7 @@ export default function HomePage() {
               className="relative z-0 -mx-2 animate-rise sm:mx-0 lg:-mr-8"
               style={{ animationDelay: "120ms" }}
             >
-              <HeroDiagram />
+              <HeroCreditCard />
             </div>
           </div>
         </section>
@@ -173,33 +174,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* How it works */}
-        <section id="how-it-works" className="border-b border-steel bg-paper">
-          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-            <p className="tech-label text-slate">HOW IT WORKS</p>
-            <h2 className="display-section mt-3 max-w-[18ch]">
-              From plan to capacity in four steps.
-            </h2>
-            <p className="mt-5 max-w-2xl text-[14px] leading-[1.5] font-medium text-slate">
-              Configure infrastructure, get scored with Mkash, then grow while
-              repayments deduct automatically as subscribers pay.
-            </p>
-
-            <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {STEPS.map((step) => (
-                <li key={step.n}>
-                  <span className="tech-label text-slate">{step.n}</span>
-                  <p className="mt-3 text-[16px] font-semibold text-ink">
-                    {step.t}
-                  </p>
-                  <p className="mt-2 text-[14px] leading-[1.45] text-slate">
-                    {step.d}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+        <HowItWorks steps={STEPS} />
 
         {/* Infrastructure catalogue */}
         <section id="infrastructure" className="border-b border-steel bg-cloud">
@@ -284,7 +259,7 @@ export default function HomePage() {
         >
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
             <p className="tech-label text-white/50">WASP · BUILT BY SISCOM</p>
-            <h2 className="display-section mt-3 max-w-[16ch] text-paper">
+            <h2 className="display-section display-section-on-dark mt-3 max-w-[16ch]">
               Billing built for small ISPs.
             </h2>
             <p className="mt-5 max-w-2xl text-[14px] leading-[1.5] font-medium text-white/70">
@@ -313,59 +288,6 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </section>
-
-        {/* Working capital upload */}
-        <section
-          id="check"
-          className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-20"
-        >
-          <div>
-            <p className="tech-label text-slate">WORKING CAPITAL</p>
-            <h2 className="display-section mt-3">
-              Get scored in minutes on your M-Pesa cash flow.
-            </h2>
-            <p className="mt-5 max-w-lg text-[14px] leading-[1.5] font-medium text-slate">
-              Upload a 6-month M-Pesa, Till, or Paybill statement. We unlock it
-              in memory, verify continuity, and show what you qualify for—up to
-              3× average monthly net cash flow, within the KES
-              100,000–10,000,000 band.
-            </p>
-
-            <ol className="mt-8 space-y-5">
-              {[
-                {
-                  n: "01",
-                  t: "Upload",
-                  d: "Drop your official Safaricom PDF and enter the statement password.",
-                },
-                {
-                  n: "02",
-                  t: "Score",
-                  d: "We tier your multiplier and show an indicative working-capital limit.",
-                },
-                {
-                  n: "03",
-                  t: "Apply",
-                  d: "Submit ISP details. Siscom and Mkash complete verification and follow-up.",
-                },
-              ].map((step) => (
-                <li key={step.n} className="flex gap-4">
-                  <span className="tech-label mt-1 text-slate">{step.n}</span>
-                  <div>
-                    <p className="text-[16px] font-semibold text-ink">
-                      {step.t}
-                    </p>
-                    <p className="mt-1 text-[14px] leading-[1.45] text-slate">
-                      {step.d}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <UploadCard />
         </section>
 
         {/* Trust */}

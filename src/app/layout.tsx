@@ -6,6 +6,7 @@ import {
   JetBrains_Mono,
   Poppins,
 } from "next/font/google";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -43,7 +44,10 @@ export const metadata: Metadata = {
   description:
     "Grow your ISP network. Finance infrastructure, run billing on WASP, collect through Cashia, and unlock working capital from KES 100,000 to KES 10 million.",
   icons: {
-    icon: "/brand/siscom-favicon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/brand/siscom-favicon.png", type: "image/png", sizes: "512x512" },
+    ],
     apple: "/brand/siscom-favicon.png",
   },
 };
@@ -59,7 +63,7 @@ export default function RootLayout({
       className={`${poppins.variable} ${inter.variable} ${display.variable} ${chivo.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper text-ink">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

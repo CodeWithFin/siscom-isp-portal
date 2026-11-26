@@ -13,8 +13,7 @@ import {
 import { formatKes, formatNumber } from "@/lib/format";
 import { useGrowthCart } from "@/lib/growth-cart";
 import { Button } from "@/components/ui/Button";
-
-const STEPS = ["Cart", "Your ISP", "Financing", "Review", "Terms"] as const;
+import { CheckoutProgress } from "./CheckoutProgress";
 
 const BILLING_OPTIONS = [
   "Spreadsheets or manual",
@@ -57,7 +56,13 @@ function Field({
   );
 }
 
-export function GrowthConsole() {
+export function GrowthConsole({
+  variant = "checkout",
+  productId,
+}: {
+  variant?: "checkout" | "config";
+  productId?: string;
+}) {
   const router = useRouter();
   const {
     cart,
@@ -65,13 +70,10 @@ export function GrowthConsole() {
     removeItem,
     updatePlan,
     clearCart,
-    mode,
-    configProductId,
     checkoutStep,
     isp,
     fin,
     terms,
-    closeConsole,
     setCheckoutStep,
     setIsp,
     setFin,
@@ -86,35 +88,36 @@ export function GrowthConsole() {
   const [badFields, setBadFields] = useState<string[]>([]);
   const [doneRef, setDoneRef] = useState<string | null>(null);
 
-  const product = configProductId ? getProduct(configProductId) : null;
+  const isConfig = variant === "config";
+  const product = productId ? getProduct(productId) : null;
   const ind = useMemo(
     () => indicativeBilling(Number(isp.subs) || 0, Number(isp.arpu) || 0),
     [isp.subs, isp.arpu],
   );
 
   useEffect(() => {
-    if (mode === "config" && configProductId) {
-      setCfg(defaultConfig(configProductId));
+    if (isConfig && productId && getProduct(productId)) {
+      setCfg(defaultConfig(productId));
       setPlan("Lease 24 months");
       setError("");
     }
-  }, [mode, configProductId]);
+  }, [isConfig, productId]);
 
   useEffect(() => {
     if (!ind?.lim) return;
     if (fin.amount > ind.lim) setFin({ amount: ind.lim });
   }, [ind, fin.amount, setFin]);
 
-  useEffect(() => {
-    if (mode === "closed") return;
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") closeConsole();
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [mode, closeConsole]);
-
-  if (mode === "closed") return null;
+  if (isConfig && productId && !product) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
+        <h1 className="text-[22px] font-semibold text-ink">Product not found</h1>
+        <Button href="/#infrastructure" variant="primary" className="mt-6">
+          Browse infrastructure
+        </Button>
+      </div>
+    );
+  }
 
   function validateIsp(): boolean {
     const need = [
@@ -224,16 +227,19 @@ export function GrowthConsole() {
 
   function onBack() {
     setError("");
-    if (mode === "config") {
-      closeConsole();
+    if (isConfig) {
+      router.push("/#infrastructure");
       return;
     }
-    if (checkoutStep === 0) return;
+    if (checkoutStep === 0) {
+      router.push("/#infrastructure");
+      return;
+    }
     setCheckoutStep(checkoutStep - 1);
   }
 
   function onNext() {
-    if (mode === "config") {
+    if (isConfig) {
       if (!product) return;
       const miss = product.fields.find(
         (fl) =>
@@ -247,7 +253,8 @@ export function GrowthConsole() {
         return;
       }
       addItem({ productId: product.id, config: { ...cfg }, plan });
-      closeConsole();
+      setCheckoutStep(0);
+      router.push("/checkout");
       return;
     }
 
@@ -278,67 +285,36 @@ export function GrowthConsole() {
 
   const leased = cart.filter((c) => c.plan !== "Pay upfront").length;
   const nextDisabled =
-    mode === "checkout" &&
+    !isConfig &&
     checkoutStep === 4 &&
     (!Object.values(terms).every(Boolean) || busy);
 
-  const nextLabel =
-    mode === "config"
-      ? "Add to cart"
-      : checkoutStep === 4
-        ? busy
-          ? "Submitting…"
-          : "Submit application"
-        : checkoutStep === 3
-          ? "Confirm and continue"
-          : "Continue";
+  const nextLabel = isConfig
+    ? "Add to cart"
+    : checkoutStep === 4
+      ? busy
+        ? "Submitting…"
+        : "Submit application"
+      : checkoutStep === 3
+        ? "Confirm and continue"
+        : "Continue";
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 p-0 sm:items-center sm:p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="growth-pane-title"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) closeConsole();
-      }}
-    >
-      <div className="flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl border border-steel bg-paper shadow-[var(--shadow-graphite-card)] sm:rounded-3xl">
-        <div className="flex items-center justify-between border-b border-steel px-5 py-4">
-          <div>
-            <p className="tech-label text-slate">
-              {mode === "config" ? "CONFIGURE" : "CHECKOUT"}
-            </p>
-            {!doneRef && mode === "checkout" ? (
-              <ol className="mt-2 hidden grid-cols-5 gap-1 sm:grid">
-                {STEPS.map((s, i) => (
-                  <li
-                    key={s}
-                    className={`text-[11px] font-medium ${
-                      i < checkoutStep
-                        ? "text-siscom"
-                        : i === checkoutStep
-                          ? "text-ink"
-                          : "text-slate/50"
-                    }`}
-                  >
-                    {i + 1}. {s}
-                  </li>
-                ))}
-              </ol>
-            ) : null}
-          </div>
-          <button
-            type="button"
-            onClick={closeConsole}
-            className="rounded-full border border-steel px-3 py-1.5 text-[13px] font-medium text-slate hover:text-ink"
-            aria-label="Close"
-          >
+    <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+      {!doneRef && !isConfig ? <CheckoutProgress step={checkoutStep} /> : null}
+      {isConfig ? (
+        <div className="flex items-center justify-between gap-3">
+          <p className="tech-label text-slate">
+            SISCOM <span className="text-siscom">CONFIGURE</span>
+          </p>
+          <Button href="/#infrastructure" variant="outline" className="!min-h-9 !px-4 !text-[13px]">
             Close
-          </button>
+          </Button>
         </div>
+      ) : null}
 
-        <div className="flex-1 overflow-y-auto px-5 py-6">
+      <div className="mt-8 overflow-hidden rounded-3xl border border-steel bg-paper shadow-[var(--shadow-graphite-card)]">
+        <div className="min-w-0 px-5 py-6 sm:px-8 sm:py-8">
           {doneRef ? (
             <div className="text-center">
               <p className="tech-label text-siscom">Application received</p>
@@ -373,7 +349,6 @@ export function GrowthConsole() {
                   type="button"
                   variant="primary"
                   onClick={() => {
-                    closeConsole();
                     setDoneRef(null);
                     resetCheckout();
                     router.push(`/growth/confirmation/${doneRef}`);
@@ -383,7 +358,7 @@ export function GrowthConsole() {
                 </Button>
               </div>
             </div>
-          ) : mode === "config" && product ? (
+          ) : isConfig && product ? (
             <>
               <p className="tech-label text-slate">{product.who}</p>
               <h2 id="growth-pane-title" className="mt-2 text-[22px] font-semibold text-ink">
@@ -462,7 +437,7 @@ export function GrowthConsole() {
                     <button
                       type="button"
                       className="font-semibold text-siscom underline"
-                      onClick={closeConsole}
+                      onClick={() => router.push("/#infrastructure")}
                     >
                       Browse infrastructure
                     </button>
@@ -680,14 +655,7 @@ export function GrowthConsole() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    closeConsole();
-                    requestAnimationFrame(() => {
-                      document
-                        .getElementById("check")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    });
-                  }}
+                  onClick={() => router.push("/check")}
                   className="rounded-2xl border border-steel bg-cloud p-4 text-left transition hover:border-siscom sm:col-span-2"
                 >
                   <span className="tech-label text-slate">03</span>
@@ -972,23 +940,14 @@ export function GrowthConsole() {
         </div>
 
         {!doneRef ? (
-          <div className="flex items-center justify-between gap-3 border-t border-steel px-5 py-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onBack}
-              className={
-                mode === "checkout" && checkoutStep === 0
-                  ? "invisible"
-                  : undefined
-              }
-            >
-              {mode === "config" ? "Cancel" : "Back"}
+          <div className="flex items-center justify-between gap-3 border-t border-steel px-5 py-4 sm:px-8">
+            <Button type="button" variant="outline" onClick={onBack}>
+              {isConfig ? "Cancel" : checkoutStep === 0 ? "Browse" : "Back"}
             </Button>
             <Button
               type="button"
               variant="primary"
-              arrow={checkoutStep < 4 && mode === "checkout"}
+              arrow={!isConfig && checkoutStep < 4}
               disabled={nextDisabled}
               onClick={onNext}
             >

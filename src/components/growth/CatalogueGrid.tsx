@@ -3,6 +3,7 @@
 import { GROWTH_PRODUCTS } from "@/lib/growth-catalog";
 import { useGrowthCart } from "@/lib/growth-cart";
 import { Button } from "@/components/ui/Button";
+import { CatalogueIcon } from "./CatalogueIcons";
 
 export function CatalogueGrid() {
   const { openConfig } = useGrowthCart();
@@ -14,8 +15,8 @@ export function CatalogueGrid() {
           key={item.id}
           className="flex flex-col rounded-2xl border border-steel bg-paper p-5 shadow-[var(--shadow-technical-card)]"
         >
-          <span className="mb-3 inline-flex h-3 w-3 rounded-[3px] bg-siscom" />
-          <p className="tech-label text-slate">{item.who}</p>
+          <CatalogueIcon productId={item.id} />
+          <p className="tech-label mt-4 text-slate">{item.who}</p>
           <h3 className="mt-2 text-[16px] font-semibold text-ink">{item.name}</h3>
           <p className="mt-2 flex-1 text-[14px] leading-[1.45] text-slate">
             {item.desc}

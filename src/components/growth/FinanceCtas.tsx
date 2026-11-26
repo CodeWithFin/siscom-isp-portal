@@ -16,7 +16,12 @@ export function FinanceCta({
 
   if (kind === "wc") {
     return (
-      <Button href="#check" variant={primary ? "primary" : "outline"} arrow={primary} className="w-full">
+      <Button
+        href="/check"
+        variant={primary ? "primary" : "outline"}
+        arrow={primary}
+        className="w-full"
+      >
         {label}
       </Button>
     );
@@ -44,20 +49,13 @@ export function FinanceCta({
 }
 
 export function HeroGrowthCtas() {
-  const { openCheckout } = useGrowthCart();
-
   return (
-    <div className="mt-8 flex flex-col gap-3 sm:max-w-xs">
-      <Button href="#check" variant="primary" arrow className="w-full">
-        Check what you qualify for
+    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <Button href="#infrastructure" variant="primary">
+        Shop infrastructure
       </Button>
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full"
-        onClick={() => openCheckout()}
-      >
-        Start an application
+      <Button href="/check" variant="outline">
+        Check what you qualify for
       </Button>
     </div>
   );

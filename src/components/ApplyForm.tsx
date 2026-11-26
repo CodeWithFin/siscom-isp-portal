@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatKes, KENYA_COUNTIES } from "@/lib/format";
 import type { PublicAssessment } from "@/lib/types";
+import { blankWcBiz, loadWcBiz, type WcBiz } from "@/lib/wc-biz";
 import { Button } from "./ui/Button";
+import { WcProgress } from "./growth/WcProgress";
 
 export function ApplyForm({
   assessment,
@@ -18,8 +20,13 @@ export function ApplyForm({
   const [requestedAmount, setRequestedAmount] = useState(
     Math.min(max, Math.max(20_000, initialAmount)),
   );
+  const [prefill, setPrefill] = useState<WcBiz>(blankWcBiz);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPrefill(loadWcBiz());
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -59,7 +66,10 @@ export function ApplyForm({
     "mt-2 w-full rounded-xl border border-steel bg-paper px-3 py-3 text-[14px] text-ink outline-none transition focus:border-ink";
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+      <WcProgress step={3} />
+
+      <div className="mt-8 rounded-3xl border border-steel bg-paper p-5 shadow-[var(--shadow-graphite-card)] sm:p-8">
       <div className="rounded-[35px] bg-navy px-5 py-3 text-[14px] font-medium text-paper shadow-[var(--shadow-graphite-card)]">
         Applying for:{" "}
         <span className="text-siscom">{formatKes(requestedAmount)}</span>
@@ -69,7 +79,9 @@ export function ApplyForm({
         </span>
       </div>
 
-      <h1 className="display-section mt-8">ISP Loan Application</h1>
+      <h1 className="mt-8 text-[28px] font-semibold tracking-tight text-ink sm:text-[32px]">
+        ISP Loan Application
+      </h1>
       <p className="mt-3 text-[14px] font-medium text-slate">
         Share your business details so Siscom customer care can finalize
         disbursement.
@@ -84,6 +96,8 @@ export function ApplyForm({
             name="ispName"
             required
             placeholder="SwiftFiber Networks Ltd"
+            defaultValue={prefill.name}
+            key={`isp-${prefill.name}`}
             className={fieldClass}
           />
         </label>
@@ -92,7 +106,13 @@ export function ApplyForm({
           <span className="text-[13px] font-medium text-charcoal">
             Contact Person Full Name *
           </span>
-          <input name="contactName" required className={fieldClass} />
+          <input
+            name="contactName"
+            required
+            defaultValue={prefill.contact}
+            key={`contact-${prefill.contact}`}
+            className={fieldClass}
+          />
         </label>
 
         <label className="block">
@@ -104,6 +124,8 @@ export function ApplyForm({
             required
             type="tel"
             placeholder="+2547XXXXXXXX"
+            defaultValue={prefill.phone}
+            key={`phone-${prefill.phone}`}
             className={fieldClass}
           />
         </label>
@@ -112,14 +134,26 @@ export function ApplyForm({
           <span className="text-[13px] font-medium text-charcoal">
             Business Email Address
           </span>
-          <input name="email" type="email" className={fieldClass} />
+          <input
+            name="email"
+            type="email"
+            defaultValue={prefill.email}
+            key={`email-${prefill.email}`}
+            className={fieldClass}
+          />
         </label>
 
         <label className="block">
           <span className="text-[13px] font-medium text-charcoal">
             County / Primary Area of Operation *
           </span>
-          <select name="location" required defaultValue="" className={fieldClass}>
+          <select
+            name="location"
+            required
+            defaultValue={prefill.county || ""}
+            key={`county-${prefill.county}`}
+            className={fieldClass}
+          >
             <option value="" disabled>
               Select county
             </option>
@@ -196,6 +230,7 @@ export function ApplyForm({
           {loading ? "Submitting…" : "Submit Loan Request"}
         </Button>
       </form>
+      </div>
     </div>
   );
 }
